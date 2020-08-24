@@ -53,20 +53,17 @@ app.post('/signup', async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(_password, 10)
-
     users.push({
       firstName: _firstName,
       lastName: _lastName,
       email: _email,
       password: hashedPassword,
     })
-    res.json({ ok: 'ok' })
+
+    res.json({ redirect: '/login' })
   } catch (err) {
-    res.json({ err: 'err' })
+    res.json({ err })
   }
 })
 
 app.listen(3001)
-
-// loading spinner
-// something went wrong message

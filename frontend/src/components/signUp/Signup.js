@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
-import HidePasswordIcon from '../HidePasswordIcon.svg'
-import ShowPasswordIcon from '../ShowPasswordIcon.svg'
+import { useHistory } from 'react-router-dom'
+import Error from './error/Error'
+import PasswordIcon from './passwordIcon/PasswordIcon'
 import style from './Signup.module.css'
 
 function Signup() {
@@ -20,18 +21,11 @@ function Signup() {
   const [passwordError, setPasswordError] = useState('')
   const [confirmPasswordError, setConfirmPasswordError] = useState('')
 
-  const errorRefs = useRef({
-    firstNameError,
-    lastNameError,
-    emailError,
-    passwordError,
-    confirmPasswordError,
-  })
-
   const passwordErrorRef = useRef()
   const confirmPasswordErrorRef = useRef()
-
   const submitBtnRef = useRef()
+
+  const { push } = useHistory()
 
   const submitForm = e => {
     e.preventDefault()
@@ -55,6 +49,7 @@ function Signup() {
     if (passwordErrorRef.current || confirmPasswordErrorRef.current) return
 
     submitBtnRef.current.disabled = true
+    submitBtnRef.current.classList.add(style.disable)
 
     fetch('/signup', {
       method: 'POST',
@@ -68,8 +63,8 @@ function Signup() {
       }),
     })
       .then(response => response.json())
-      .then(json => {
-        console.log(json)
+      .then(data => {
+        console.log(data)
 
         const {
           firstNameError,
@@ -77,7 +72,7 @@ function Signup() {
           emailError,
           passwordError,
           confirmPasswordError,
-        } = json
+        } = data
 
         const errors =
           firstNameError ||
@@ -92,12 +87,13 @@ function Signup() {
           setEmailError(emailError)
           setPasswordError(passwordError)
           setConfirmPasswordError(confirmPasswordError)
+
+          submitBtnRef.current.disabled = false
+          submitBtnRef.current.classList.remove(style.disable)
         } else {
           console.log('NO ERRORS')
-          // go to login
+          push(data.redirect)
         }
-
-        submitBtnRef.current.disabled = false
       })
       .catch(console.log)
   }
@@ -113,26 +109,22 @@ function Signup() {
         <div>
           <label htmlFor="firstName">First name</label>
           <input
-            type="text"
             id="firstName"
             value={firstName}
             onChange={e => setFirstName(e.target.value)}
             required
           />
-          {firstNameError && (
-            <div className={style.error}>{firstNameError}</div>
-          )}
+          {firstNameError && <Error error={firstNameError} />}
         </div>
         <div>
           <label htmlFor="lastName">Last name</label>
           <input
-            type="text"
             id="lastName"
             value={lastName}
             onChange={e => setLastName(e.target.value)}
             required
           />
-          {lastNameError && <div className={style.error}>{lastNameError}</div>}
+          {lastNameError && <Error error={lastNameError} />}
         </div>
         <div>
           <label htmlFor="email">E-Mail</label>
@@ -143,33 +135,23 @@ function Signup() {
             onChange={e => setEmail(e.target.value)}
             required
           />
-          {emailError && <div className={style.error}>{emailError}</div>}
+          {emailError && <Error error={emailError} />}
         </div>
         <div>
           <label htmlFor="password">Password</label>
-          <div>
-            <input
-              type={passwordInputType}
-              id="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required
-            />
-            {passwordInputType === 'password' ? (
-              <img
-                src={HidePasswordIcon}
-                onClick={showPassword}
-                alt="Hide password icon"
-              />
-            ) : (
-              <img
-                src={ShowPasswordIcon}
-                onClick={hidePassword}
-                alt="Show password icon"
-              />
-            )}
-          </div>
-          {passwordError && <div className={style.error}>{passwordError}</div>}
+          <input
+            type={passwordInputType}
+            id="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+            required
+          />
+          {passwordInputType === 'password' ? (
+            <PasswordIcon display="Hide" handleEvent={showPassword} />
+          ) : (
+            <PasswordIcon display="Show" handleEvent={hidePassword} />
+          )}
+          {passwordError && <Error error={passwordError} />}
         </div>
         <div>
           <label htmlFor="confirmPassword">Confirm Password</label>
@@ -181,21 +163,11 @@ function Signup() {
             required
           />
           {confirmPasswordInputType === 'password' ? (
-            <img
-              src={HidePasswordIcon}
-              onClick={showConfirmPassword}
-              alt="Hide password icon"
-            />
+            <PasswordIcon display="Hide" handleEvent={showConfirmPassword} />
           ) : (
-            <img
-              src={ShowPasswordIcon}
-              onClick={hideConfirmPassword}
-              alt="Show password icon"
-            />
+            <PasswordIcon display="Show" handleEvent={hideConfirmPassword} />
           )}
-          {confirmPasswordError && (
-            <div className={style.error}>{confirmPasswordError}</div>
-          )}
+          {confirmPasswordError && <Error error={confirmPasswordError} />}
         </div>
         <button ref={submitBtnRef} className={style.signUpBtn}>
           Sign Up
@@ -206,7 +178,3 @@ function Signup() {
 }
 
 export default Signup
-
-// make header sticky
-// when '/signup' is triggered send an ajax request. if authenticated, redirect to '/'
-// properly handle errors

@@ -1,0 +1,64 @@
+.signupForm {
+  display: flex;
+  justify-content: center;
+}
+
+.signupForm > div {
+  display: grid;
+}
+
+.signupForm label {
+  display: block;
+  margin: 14px 0;
+}
+
+.signupForm > div > div {
+  position: relative;
+}
+
+.signupForm input {
+  font-size: 16px;
+  padding: 4px 10px;
+  margin-bottom: 14px;
+}
+
+.signUpBtn {
+  background-color: #1877f2;
+  color: #fff;
+  width: 50%;
+  height: 60%;
+  justify-self: center;
+  border: 0;
+  border-radius: 5px;
+  margin: 20px 0;
+  cursor: pointer;
+}
+
+.signUpBtn:hover,
+.signUpBtn:focus,
+.disable {
+  background-color: #2b88ff;
+}
+
+@media (min-width: 700px) {
+  .signupForm > div {
+    margin-top: 14px;
+  }
+
+  .signupForm label {
+    display: inline;
+    position: relative;
+    top: 4px;
+  }
+
+  .signupForm input {
+    float: right;
+    position: relative;
+    left: 12px;
+    margin-bottom: 32px;
+  }
+
+  .signUpBtn {
+    width: 40%;
+  }
+}

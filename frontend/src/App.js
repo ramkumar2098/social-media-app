@@ -1,15 +1,20 @@
 import React from 'react'
-import Navbar from './components/Navbar'
-import Header from './components/Header'
-import Signup from './components/Signup'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
+import Navbar from './components/navbar/Navbar'
+import Header from './components/header/Header'
+import Signup from './components/signUp/Signup'
+import Login from './components/login/Login'
 
 function App() {
   return (
-    <>
+    <Router>
       <Navbar />
-      <Header />
-      <Signup />
-    </>
+      <Route path="/signup">
+        <Header />
+        <Signup />
+      </Route>
+      <Route path="/login" component={Login} />
+    </Router>
   )
 }
 

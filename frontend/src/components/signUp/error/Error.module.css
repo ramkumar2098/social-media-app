@@ -1,0 +1,13 @@
+.error {
+  color: #ff0000;
+  position: absolute;
+  bottom: -6px;
+  white-space: nowrap;
+}
+
+@media (min-width: 700px) {
+  .error {
+    top: 32px;
+    left: 142px;
+  }
+}
