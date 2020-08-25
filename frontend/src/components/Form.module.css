@@ -1,0 +1,76 @@
+.form {
+  display: flex;
+  justify-content: center;
+}
+
+.form > div {
+  display: grid;
+}
+
+.form > div > div {
+  position: relative;
+}
+
+.form label {
+  display: block;
+  margin: 14px 0;
+}
+
+.form input {
+  font-size: 16px;
+  padding: 4px 10px;
+  margin-bottom: 14px;
+}
+
+.btn {
+  background-color: #1877f2;
+  color: #fff;
+  width: 50%;
+  height: 60%;
+  justify-self: center;
+  border: 0;
+  border-radius: 5px;
+  margin: 20px 0;
+  cursor: pointer;
+}
+
+.btn:hover,
+.btn:focus,
+.disable {
+  opacity: 0.8;
+}
+
+.link {
+  display: block;
+  text-align: center;
+  color: #1877f2;
+  text-decoration: none;
+  margin-top: 17px;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+@media (min-width: 700px) {
+  .form > div {
+    margin-top: 14px;
+  }
+
+  .form label {
+    display: inline;
+    position: relative;
+    top: 4px;
+  }
+
+  .form input {
+    float: right;
+    position: relative;
+    left: 12px;
+    margin-bottom: 32px;
+  }
+
+  .btn {
+    width: 40%;
+  }
+}

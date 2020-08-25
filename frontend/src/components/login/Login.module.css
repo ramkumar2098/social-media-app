@@ -1,0 +1,9 @@
+@media (min-width: 700px) {
+  .loginForm input[id='password'] {
+    margin-bottom: 16px;
+  }
+
+  .loginForm > div > div > div {
+    left: 82px;
+  }
+}

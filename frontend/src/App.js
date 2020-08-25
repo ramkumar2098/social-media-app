@@ -10,10 +10,13 @@ function App() {
     <Router>
       <Navbar />
       <Route path="/signup">
-        <Header />
+        <Header header="Create your account" />
         <Signup />
       </Route>
-      <Route path="/login" component={Login} />
+      <Route path="/login">
+        <Header header="Log in to Fakebook" />
+        <Login />
+      </Route>
     </Router>
   )
 }

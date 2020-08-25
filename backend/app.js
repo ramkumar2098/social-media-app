@@ -60,10 +60,44 @@ app.post('/signup', async (req, res) => {
       password: hashedPassword,
     })
 
-    res.json({ redirect: '/login' })
+    res.json({ path: '/login' })
   } catch (err) {
-    res.json({ err })
+    console.log(err)
   }
+})
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body
+
+  let emailError
+  let passwordError
+
+  if (!email) {
+    emailError = 'Enter e-mail'
+  } else {
+    const user = users.find(user => email === user.email)
+    let pwd
+
+    if (user)
+      try {
+        pwd = await bcrypt.compare(password, user.password)
+      } catch (err) {
+        console.log(err)
+      }
+
+    if (!user || !pwd) {
+      emailError = 'Invalid e-mail or password'
+    }
+  }
+
+  if (!password) {
+    passwordError = 'Enter password'
+  }
+
+  if (emailError || passwordError)
+    return res.json({ emailError, passwordError })
+
+  res.json({ path: '/home' })
 })
 
 app.listen(3001)

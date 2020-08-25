@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react'
-import { useHistory } from 'react-router-dom'
-import Error from './error/Error'
-import PasswordIcon from './passwordIcon/PasswordIcon'
-import style from './Signup.module.css'
+import { Link, useHistory } from 'react-router-dom'
+import Error from '../error/Error'
+import PasswordIcon from '../passwordIcon/PasswordIcon'
+import Spinner from '../spinner/Spinner'
+import style from '../Form.module.css'
+import style1 from './Signup.module.css'
 
 function Signup() {
   const [passwordInputType, setPasswordInputType] = useState('password')
@@ -21,9 +23,11 @@ function Signup() {
   const [passwordError, setPasswordError] = useState('')
   const [confirmPasswordError, setConfirmPasswordError] = useState('')
 
+  const [spinner, setSpinner] = useState(false)
+
   const passwordErrorRef = useRef()
   const confirmPasswordErrorRef = useRef()
-  const submitBtnRef = useRef()
+  const signUpBtnRef = useRef()
 
   const { push } = useHistory()
 
@@ -48,8 +52,9 @@ function Signup() {
 
     if (passwordErrorRef.current || confirmPasswordErrorRef.current) return
 
-    submitBtnRef.current.disabled = true
-    submitBtnRef.current.classList.add(style.disable)
+    signUpBtnRef.current.disabled = true
+    signUpBtnRef.current.classList.add(style.disable)
+    setSpinner(true)
 
     fetch('/signup', {
       method: 'POST',
@@ -64,8 +69,6 @@ function Signup() {
     })
       .then(response => response.json())
       .then(data => {
-        console.log(data)
-
         const {
           firstNameError,
           lastNameError,
@@ -88,11 +91,11 @@ function Signup() {
           setPasswordError(passwordError)
           setConfirmPasswordError(confirmPasswordError)
 
-          submitBtnRef.current.disabled = false
-          submitBtnRef.current.classList.remove(style.disable)
+          signUpBtnRef.current.disabled = false
+          signUpBtnRef.current.classList.remove(style.disable)
+          setSpinner(false)
         } else {
-          console.log('NO ERRORS')
-          push(data.redirect)
+          push(data.path)
         }
       })
       .catch(console.log)
@@ -104,7 +107,7 @@ function Signup() {
   const hideConfirmPassword = () => setConfirmPasswordInputType('password')
 
   return (
-    <form onSubmit={submitForm} className={style.signupForm}>
+    <form onSubmit={submitForm} className={style.form}>
       <div>
         <div>
           <label htmlFor="firstName">First name</label>
@@ -160,6 +163,7 @@ function Signup() {
             id="confirmPassword"
             value={confirmPassword}
             onChange={e => setConfirmPassword(e.target.value)}
+            className={style1.confirmPassword}
             required
           />
           {confirmPasswordInputType === 'password' ? (
@@ -169,9 +173,13 @@ function Signup() {
           )}
           {confirmPasswordError && <Error error={confirmPasswordError} />}
         </div>
-        <button ref={submitBtnRef} className={style.signUpBtn}>
-          Sign Up
+        <button ref={signUpBtnRef} className={style.btn}>
+          {spinner && <Spinner />}
+          <span>Sign Up</span>
         </button>
+        <Link to="/login" className={style.link}>
+          Already have an account?
+        </Link>
       </div>
     </form>
   )
