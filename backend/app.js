@@ -15,6 +15,10 @@ app.use(express.json())
 
 const users = []
 
+app.post('/auth', (req, res) => {
+  res.json({ loggedIn: true })
+})
+
 app.post('/signup', async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword } = req.body
 
