@@ -7,10 +7,6 @@ import style from '../Form.module.css'
 import style1 from './Signup.module.css'
 
 function Signup() {
-  const [passwordInputType, setPasswordInputType] = useState('password')
-  const [confirmPasswordInputType, setConfirmPasswordInputType] = useState(
-    'password'
-  )
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [email, setEmail] = useState('')
@@ -23,6 +19,10 @@ function Signup() {
   const [passwordError, setPasswordError] = useState('')
   const [confirmPasswordError, setConfirmPasswordError] = useState('')
 
+  const [passwordInputType, setPasswordInputType] = useState('password')
+  const [confirmPasswordInputType, setConfirmPasswordInputType] = useState(
+    'password'
+  )
   const [spinner, setSpinner] = useState(false)
 
   const passwordErrorRef = useRef()
@@ -50,7 +50,10 @@ function Signup() {
       confirmPasswordErrorRef.current = ''
     }
 
-    if (passwordErrorRef.current || confirmPasswordErrorRef.current) return
+    const a = firstNameError || lastNameError || emailError
+    const b = passwordErrorRef.current || confirmPasswordErrorRef.current
+
+    if (!a && b) return
 
     signUpBtnRef.current.disabled = true
     signUpBtnRef.current.classList.add(style.disable)

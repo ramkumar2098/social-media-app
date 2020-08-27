@@ -13,3 +13,34 @@
   font-size: 20px;
   font-weight: bold;
 }
+
+.navItems {
+  position: absolute;
+  top: 15px;
+  right: 14px;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.navItems > a {
+  text-decoration: none;
+  color: #fff;
+}
+
+.navItems > a:first-child {
+  margin-right: 20px;
+}
+
+.navItems > a:hover {
+  opacity: 0.6;
+}
+
+@media (min-width: 900px) {
+  .navItems {
+    margin-right: 10px;
+  }
+
+  .navItems > a:first-child {
+    margin-right: 25px;
+  }
+}

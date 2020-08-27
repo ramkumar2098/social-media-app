@@ -1,0 +1,20 @@
+.burgerMenu {
+  background-color: #1877f2;
+  position: sticky;
+  top: 47px;
+  z-index: 1;
+}
+
+.burgerMenu > a {
+  display: block;
+  text-decoration: none;
+  font-weight: 600;
+  color: #fff;
+  padding: 12px 0;
+  border-top: 1px solid #000;
+  text-align: center;
+}
+
+.burgerMenu > a:hover {
+  opacity: 0.6;
+}
