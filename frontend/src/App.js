@@ -1,5 +1,10 @@
 import React, { useState } from 'react'
-import { BrowserRouter as Router, Switch } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from 'react-router-dom'
 import CheckAuth from 'components/checkAuth/CheckAuth'
 import PrivateRoute from 'components/privateRoute/PrivateRoute'
 import Navbar from './components/navbar/Navbar'
@@ -26,11 +31,15 @@ function App() {
         displayBurger={displayBurger}
         openBurgerMenu={openBurgerMenu}
         displayNavItems={displayNavItems}
+        displayBurgerMenu={displayBurgerMenu}
       />
       {displayBurgerMenu && !displayNavItems && (
         <BurgerMenu closeBurgerMenu={closeBurgerMenu} />
       )}
       <Switch>
+        <Route path="/" exact>
+          <Redirect to="/home" />
+        </Route>
         <CheckAuth path="/signup">
           <Header header="Create your account" />
           <Signup />

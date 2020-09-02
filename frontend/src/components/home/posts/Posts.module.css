@@ -1,0 +1,8 @@
+.posts {
+  clear: right;
+  line-height: 1.5;
+  word-break: break-word;
+  word-spacing: 1px;
+  letter-spacing: 0.25px;
+  white-space: pre-wrap;
+}

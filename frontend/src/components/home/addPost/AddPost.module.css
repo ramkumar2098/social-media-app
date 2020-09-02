@@ -1,0 +1,11 @@
+.addPost {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: 70px;
+  margin-top: 35px;
+}
+
+.addPost::placeholder {
+  font-size: 14px;
+}

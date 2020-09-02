@@ -1,0 +1,32 @@
+.actions {
+  margin-top: 10px;
+}
+
+.actions svg:hover {
+  fill: #606060;
+}
+
+.count,
+.replyBtn {
+  vertical-align: super;
+}
+
+.count {
+  font-size: 15px;
+  margin-right: 9px;
+  margin-left: 7px;
+  opacity: 0.8;
+}
+
+.replyBtn {
+  background-color: #fff;
+  border: 0;
+  font-size: 16px;
+  margin-left: 4px;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.replyBtn:hover {
+  opacity: 1;
+}
