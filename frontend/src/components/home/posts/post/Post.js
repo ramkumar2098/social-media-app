@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import profile from 'images/profile.png'
+import Edit from './edit/Edit'
 import PostHead from './postHead/PostHead'
 import Dropdown from './dropdown/Dropdown'
 import Actions from './actions/Actions'
-import style from './Post.module.css'
-import { buttons } from '../../Buttons.module.css'
+import Reply from './reply/Reply'
 import { ReactComponent as OpenDropdownCaret } from 'SVGs/OpenDropdownCaret.svg'
 import { ReactComponent as CloseDropdownCaret } from 'SVGs/CloseDropdownCaret.svg'
 import Replies from './replies/Replies'
+import style from './Post.module.css'
 
 function Post({ post, updatePost, deletePost }) {
   const [displayDropdown, setDisplayDropdown] = useState(false)
@@ -19,18 +20,31 @@ function Post({ post, updatePost, deletePost }) {
     setEditPost(true)
     closeDropdown()
   }
-
   const exitEditPost = () => setEditPost(false)
 
   const [editedPost, setEditedPost] = useState(post)
+  const [reply, setReply] = useState('')
 
   const [addReply, setAddReply] = useState(false)
   const openAddReply = () => setAddReply(true)
+  const closeAddReply = () => {
+    setReply('')
+    setAddReply(false)
+  }
 
-  const [reply, setReply] = useState('')
+  const submitReply = () => {
+    setReplies([...replies, reply])
+    setReply('')
+    setAddReply(false)
+    setShowReplies(true)
+  }
 
-  const [replies, setReplies] = useState(['asdasd asdasd asd', 'asdas'])
+  const [replies, setReplies] = useState([])
   const [showReplies, setShowReplies] = useState(false)
+
+  const addReplyToReply = replyToReply => {
+    setReplies([...replies, replyToReply])
+  }
 
   const updateReply = (reply, editedReply) => {
     const _replies = [...replies]
@@ -55,24 +69,12 @@ function Post({ post, updatePost, deletePost }) {
       </a>
       <div>
         {editPost ? (
-          <>
-            <textarea
-              value={editedPost}
-              onChange={e => setEditedPost(e.target.value)}
-              className={style.editPost}
-            />
-            <div className={buttons} style={{ marginBottom: 0 }}>
-              <button
-                onClick={() => {
-                  updatePost(post, editedPost)
-                }}
-                style={{ opacity: editedPost ? 1 : 0.8 }}
-              >
-                Save
-              </button>
-              <button onClick={exitEditPost}>Cancel</button>
-            </div>
-          </>
+          <Edit
+            editedPost={editedPost}
+            changePost={e => setEditedPost(e.target.value)}
+            updatePost={() => updatePost(post, editedPost)}
+            exitEditPost={exitEditPost}
+          />
         ) : (
           <>
             <div className={style.postContainer}>
@@ -88,38 +90,13 @@ function Post({ post, updatePost, deletePost }) {
               <Actions openAddReply={openAddReply} />
             </div>
             {addReply && (
-              <>
-                <div className={style.reply}>
-                  <span>
-                    <img src={profile} alt="profile picture" />
-                  </span>
-                  <textarea
-                    value={reply}
-                    onChange={e => setReply(e.target.value)}
-                  />
-                </div>
-                <div className={buttons} style={{ marginBottom: 0 }}>
-                  <button
-                    onClick={() => {
-                      setReplies([...replies, reply])
-                      setReply('')
-                      setAddReply(false)
-                      setShowReplies(true)
-                    }}
-                    style={{ opacity: post ? 1 : 0.8 }}
-                  >
-                    Reply
-                  </button>
-                  <button
-                    onClick={() => {
-                      setReply('')
-                      setAddReply(false)
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </>
+              <Reply
+                reply={reply}
+                changeReply={e => setReply(e.target.value)}
+                submitReply={submitReply}
+                closeAddReply={closeAddReply}
+                opacity={{ opacity: post ? 1 : 0.8 }}
+              />
             )}
           </>
         )}
@@ -140,8 +117,7 @@ function Post({ post, updatePost, deletePost }) {
             <Replies
               key={reply}
               reply={reply}
-              replies={replies}
-              setReplies={setReplies}
+              addReplyToReply={addReplyToReply}
               updateReply={updateReply}
               deleteReply={deleteReply}
             />

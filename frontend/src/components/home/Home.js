@@ -11,7 +11,7 @@ function Home({ setDisplayBurger }) {
   }, [])
 
   const [post, setPost] = useState('')
-  const [posts, setPosts] = useState(['asdasd asdasd asd asdasd asdasd'])
+  const [posts, setPosts] = useState([])
 
   const addPost = () => {
     if (!post) return
@@ -43,12 +43,7 @@ function Home({ setDisplayBurger }) {
         addPost={addPost}
         clearPost={() => setPost('')}
       />
-      <Posts
-        posts={posts}
-        updatePost={updatePost}
-        deletePost={deletePost}
-        setPosts={setPosts}
-      />
+      <Posts posts={posts} updatePost={updatePost} deletePost={deletePost} />
     </div>
   )
 }

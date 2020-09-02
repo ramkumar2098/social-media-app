@@ -7,7 +7,7 @@ function Posts({ posts, ...props }) {
     posts.length > 0 && (
       <div className={style.posts}>
         {posts.map(post => (
-          <Post key={post} post={post} posts={posts} {...props} />
+          <Post key={post} post={post} {...props} />
         ))}
       </div>
     )

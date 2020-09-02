@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import profile from 'images/profile.png'
+import Edit from '../edit/Edit'
 import PostHead from '../postHead/PostHead'
 import Dropdown from '../dropdown/Dropdown'
 import Actions from '../actions/Actions'
+import Reply from '../reply/Reply'
 import style from '../Post.module.css'
 import style1 from './Replies.module.css'
-import { buttons } from '../../../Buttons.module.css'
 
-function Replies({ reply, replies, setReplies, updateReply, deleteReply }) {
+function Replies({ reply, addReplyToReply, updateReply, deleteReply }) {
   const [displayReplyDropdown, setDisplayReplyDropdown] = useState(false)
   const openReplyDropdown = () => setDisplayReplyDropdown(true)
   const closeReplyDropdown = () => setDisplayReplyDropdown(false)
@@ -20,12 +21,20 @@ function Replies({ reply, replies, setReplies, updateReply, deleteReply }) {
   const exitEditReply = () => setEditReply(false)
 
   const [editedReply, setEditedReply] = useState(reply)
-
   const [replyToReply, setReplyToReply] = useState('')
 
   const [addReplyToPost, setAddReplyToPost] = useState(false)
   const openAddReplyToPost = () => setAddReplyToPost(true)
-  const closeAddReplyToPost = () => setAddReplyToPost(false)
+  const closeAddReplyToPost = () => {
+    setReplyToReply('')
+    setAddReplyToPost(false)
+  }
+
+  const submitReplyToReply = () => {
+    addReplyToReply(replyToReply)
+    setReplyToReply('')
+    closeAddReplyToPost()
+  }
 
   return (
     <>
@@ -40,22 +49,12 @@ function Replies({ reply, replies, setReplies, updateReply, deleteReply }) {
         </a>
         <div>
           {editReply ? (
-            <>
-              <textarea
-                value={editedReply}
-                onChange={e => setEditedReply(e.target.value)}
-                className={style.editPost}
-              />
-              <div className={buttons} style={{ marginBottom: 0 }}>
-                <button
-                  onClick={() => updateReply(reply, editedReply)}
-                  style={{ opacity: editedReply ? 1 : 0.8 }}
-                >
-                  Save
-                </button>
-                <button onClick={exitEditReply}>Cancel</button>
-              </div>
-            </>
+            <Edit
+              editedPost={editedReply}
+              changePost={e => setEditedReply(e.target.value)}
+              updatePost={() => updateReply(reply, editedReply)}
+              exitEditPost={exitEditReply}
+            />
           ) : (
             <div className={style1.replyContainer}>
               <PostHead openDropdown={openReplyDropdown} />
@@ -69,31 +68,13 @@ function Replies({ reply, replies, setReplies, updateReply, deleteReply }) {
               <div>{reply}</div>
               <Actions openAddReply={openAddReplyToPost} />
               {addReplyToPost && (
-                <>
-                  <div className={style.reply}>
-                    <span>
-                      <img src={profile} alt="profile picture" />
-                    </span>
-                    <textarea
-                      value={replyToReply}
-                      onChange={e => setReplyToReply(e.target.value)}
-                      placeholder="Add a reply"
-                    />
-                  </div>
-                  <div className={buttons} style={{ marginBottom: 0 }}>
-                    <button
-                      onClick={() => {
-                        setReplies([...replies, replyToReply])
-                        setReplyToReply('')
-                        closeAddReplyToPost()
-                      }}
-                      style={{ opacity: reply ? 1 : 0.8 }}
-                    >
-                      Reply
-                    </button>
-                    <button onClick={closeAddReplyToPost}>Cancel</button>
-                  </div>
-                </>
+                <Reply
+                  reply={replyToReply}
+                  changeReply={e => setReplyToReply(e.target.value)}
+                  submitReply={submitReplyToReply}
+                  closeAddReply={closeAddReplyToPost}
+                  opacity={{ opacity: reply ? 1 : 0.8 }}
+                />
               )}
             </div>
           )}
