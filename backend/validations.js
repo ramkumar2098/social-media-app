@@ -24,8 +24,13 @@ export function validateLastName(lastName) {
     : ''
 }
 
-export function validateEmail(users, email) {
-  const userExists = users.some(user => email === user.email)
+export async function validateEmail(col, email) {
+  let userExists
+  try {
+    userExists = await col.findOne({ email })
+  } catch (err) {
+    console.log(err)
+  }
   const regExp = /\S+@\S+\.\S+/
 
   return userExists

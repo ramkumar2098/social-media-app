@@ -3,7 +3,7 @@ import AddPost from './addPost/AddPost'
 import Posts from './posts/Posts'
 import style from './Home.module.css'
 
-function Home({ setDisplayBurger }) {
+function Home({ userName, setDisplayBurger }) {
   useEffect(() => {
     setDisplayBurger(true)
 
@@ -17,6 +17,19 @@ function Home({ setDisplayBurger }) {
     if (!post) return
     setPost('')
     setPosts([post, ...posts])
+
+    fetch('/posts', {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({
+        userName,
+        post,
+        time: Date.now(),
+        likes: 0,
+        dislikes: 0,
+        replies: [],
+      }),
+    }).catch(console.log)
   }
 
   const updatePost = (post, editedPost) => {
@@ -35,6 +48,24 @@ function Home({ setDisplayBurger }) {
     setPosts(_posts)
   }
 
+  const [replies, setReplies] = useState([])
+
+  useEffect(() => {
+    fetch('/posts')
+      .then(response => response.json())
+      .then(data => {
+        const posts = []
+        const replies = []
+        data.reverse().forEach(post => {
+          posts.push(post.post)
+          replies.push(post.replies)
+        })
+        setPosts(posts)
+        setReplies(replies)
+      })
+      .catch(console.log)
+  }, [])
+
   return (
     <div className={style.home}>
       <AddPost
@@ -43,7 +74,13 @@ function Home({ setDisplayBurger }) {
         addPost={addPost}
         clearPost={() => setPost('')}
       />
-      <Posts posts={posts} updatePost={updatePost} deletePost={deletePost} />
+      <Posts
+        posts={posts}
+        replies={replies}
+        userName={userName}
+        updatePost={updatePost}
+        deletePost={deletePost}
+      />
     </div>
   )
 }

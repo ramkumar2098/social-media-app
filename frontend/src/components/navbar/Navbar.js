@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import Burger from './burger/Burger'
 import style from './Navbar.module.css'
 
@@ -27,9 +28,9 @@ function Navbar({
 
   return (
     <div ref={navbarRef} className={style.navbar}>
-      <a href="/" className={style.logo}>
-        Fakebook
-      </a>
+      <Link to="/home" className={style.logo}>
+        FakeBook
+      </Link>
       {displayBurger && !displayNavItems && (
         <Burger openBurgerMenu={openBurgerMenu} />
       )}

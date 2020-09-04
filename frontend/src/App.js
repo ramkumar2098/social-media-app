@@ -25,6 +25,8 @@ function App() {
   const [displayNavItems, setDisplayNavItems] = useState(mediaQ.matches)
   mediaQ.onchange = () => setDisplayNavItems(mediaQ.matches)
 
+  const [userName, setUserName] = useState('')
+
   return (
     <Router>
       <Navbar
@@ -48,8 +50,8 @@ function App() {
           <Header header="Log in to Fakebook" />
           <Login />
         </CheckAuth>
-        <PrivateRoute path="/home">
-          <Home setDisplayBurger={setDisplayBurger} />
+        <PrivateRoute path="/home" setUserName={setUserName}>
+          <Home userName={userName} setDisplayBurger={setDisplayBurger} />
         </PrivateRoute>
       </Switch>
     </Router>

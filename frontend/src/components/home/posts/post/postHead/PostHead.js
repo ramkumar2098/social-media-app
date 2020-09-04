@@ -7,11 +7,11 @@ import style from './PostHead.module.css'
 
 JavascriptTimeAgo.addLocale(en)
 
-function PostHead({ openDropdown }) {
+function PostHead({ userName, openDropdown }) {
   return (
     <div className={style.postHead}>
       <div>
-        <a href="#">ramkumar asdasf</a> <ReactTimeAgo date={Date.now()} />
+        <a href="#">{userName}</a> <ReactTimeAgo date={Date.now()} />
       </div>
       <button onClick={openDropdown} className={style.kebab}>
         <VerticalKebab />

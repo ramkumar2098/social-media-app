@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import { Link, Redirect } from 'react-router-dom'
 import Overlay from '../overlay/Overlay'
 import style from './BurgerMenu.module.css'
 
@@ -17,12 +18,20 @@ function BurgerMenu({ closeBurgerMenu }) {
       )
   }, [])
 
+  const [redirect, setRedirect] = useState(false)
+
+  const logOut = () => {
+    fetch('/logout', { method: 'POST' }).catch(console.log)
+    setRedirect(true)
+  }
+
   return (
     <>
       <Overlay />
       <div className={style.burgerMenu}>
-        <a href="#">Profile</a>
-        <a href="#">Log out</a>
+        <Link to="#">Profile</Link>
+        <button onClick={logOut}>Log out</button>
+        {redirect && <Redirect to="/login" />}
       </div>
     </>
   )

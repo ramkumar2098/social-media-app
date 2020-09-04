@@ -8,7 +8,13 @@ import Reply from '../reply/Reply'
 import style from '../Post.module.css'
 import style1 from './Replies.module.css'
 
-function Replies({ reply, addReplyToReply, updateReply, deleteReply }) {
+function Replies({
+  reply,
+  userName,
+  addReplyToReply,
+  updateReply,
+  deleteReply,
+}) {
   const [displayReplyDropdown, setDisplayReplyDropdown] = useState(false)
   const openReplyDropdown = () => setDisplayReplyDropdown(true)
   const closeReplyDropdown = () => setDisplayReplyDropdown(false)
@@ -57,7 +63,7 @@ function Replies({ reply, addReplyToReply, updateReply, deleteReply }) {
             />
           ) : (
             <div className={style1.replyContainer}>
-              <PostHead openDropdown={openReplyDropdown} />
+              <PostHead userName={userName} openDropdown={openReplyDropdown} />
               {displayReplyDropdown && (
                 <Dropdown
                   closeDropdown={closeReplyDropdown}

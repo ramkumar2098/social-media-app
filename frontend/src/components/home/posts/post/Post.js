@@ -9,8 +9,9 @@ import { ReactComponent as OpenDropdownCaret } from 'SVGs/OpenDropdownCaret.svg'
 import { ReactComponent as CloseDropdownCaret } from 'SVGs/CloseDropdownCaret.svg'
 import Replies from './replies/Replies'
 import style from './Post.module.css'
+import { useEffect } from 'react'
 
-function Post({ post, updatePost, deletePost }) {
+function Post({ post, replies: _replies, userName, updatePost, deletePost }) {
   const [displayDropdown, setDisplayDropdown] = useState(false)
   const openDropdown = () => setDisplayDropdown(true)
   const closeDropdown = () => setDisplayDropdown(false)
@@ -37,13 +38,47 @@ function Post({ post, updatePost, deletePost }) {
     setReply('')
     setAddReply(false)
     setShowReplies(true)
+
+    fetch('/replies', {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({
+        userName,
+        reply,
+        time: Date.now(),
+        likes: 0,
+        dislikes: 0,
+      }),
+    }).catch(console.log)
   }
 
   const [replies, setReplies] = useState([])
+
+  useEffect(() => {
+    if (_replies?.length > 0) {
+      const replies = []
+      _replies.forEach(reply => replies.push(reply.reply))
+
+      setReplies(replies)
+    }
+  }, [_replies])
+
   const [showReplies, setShowReplies] = useState(false)
 
   const addReplyToReply = replyToReply => {
     setReplies([...replies, replyToReply])
+
+    fetch('/replies', {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({
+        userName,
+        reply: replyToReply,
+        time: Date.now(),
+        likes: 0,
+        dislikes: 0,
+      }),
+    }).catch(console.log)
   }
 
   const updateReply = (reply, editedReply) => {
@@ -78,7 +113,7 @@ function Post({ post, updatePost, deletePost }) {
         ) : (
           <>
             <div className={style.postContainer}>
-              <PostHead openDropdown={openDropdown} />
+              <PostHead userName={userName} openDropdown={openDropdown} />
               {displayDropdown && (
                 <Dropdown
                   closeDropdown={closeDropdown}
@@ -117,6 +152,7 @@ function Post({ post, updatePost, deletePost }) {
             <Replies
               key={reply}
               reply={reply}
+              userName={userName}
               addReplyToReply={addReplyToReply}
               updateReply={updateReply}
               deleteReply={deleteReply}
