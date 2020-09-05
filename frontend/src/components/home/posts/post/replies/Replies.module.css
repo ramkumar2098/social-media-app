@@ -1,8 +1,0 @@
-.replyContainer {
-  width: 100%;
-  position: relative;
-}
-
-.replyContainer:hover > div > button {
-  opacity: 1;
-}

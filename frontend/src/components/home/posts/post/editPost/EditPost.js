@@ -1,8 +1,8 @@
 import React from 'react'
-import style from './Edit.module.css'
+import style from './EditPost.module.css'
 import { buttons } from '../../../Buttons.module.css'
 
-function Edit({ editedPost, changePost, updatePost, exitEditPost }) {
+function EditPost({ editedPost, changePost, updatePost, closeEditPost }) {
   return (
     <>
       <textarea
@@ -14,10 +14,10 @@ function Edit({ editedPost, changePost, updatePost, exitEditPost }) {
         <button onClick={updatePost} style={{ opacity: editedPost ? 1 : 0.8 }}>
           Save
         </button>
-        <button onClick={exitEditPost}>Cancel</button>
+        <button onClick={closeEditPost}>Cancel</button>
       </div>
     </>
   )
 }
 
-export default Edit
+export default EditPost

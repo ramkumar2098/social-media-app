@@ -1,6 +1,12 @@
-.post {
+.post,
+.reply {
   display: flex;
   margin-top: 16px;
+}
+
+.post > a,
+.reply > a {
+  height: 100%;
 }
 
 .profilePic {
@@ -8,16 +14,19 @@
   border-radius: 50%;
 }
 
-.post > div {
+.post > div,
+.reply > div {
   width: 100%;
   margin-left: 15px;
 }
 
-.postContainer {
+.postContainer,
+.replyContainer {
   position: relative;
 }
 
-.postContainer:hover > div > button {
+.postContainer:hover > div > button,
+.replyContainer:hover > div > button {
   opacity: 1;
 }
 
@@ -46,12 +55,7 @@
   vertical-align: super;
 }
 
-.replies {
-  display: flex;
+.reply {
+  margin-top: 0;
   margin-bottom: 5px;
-}
-
-.replies > div {
-  margin-left: 15px;
-  width: 100%;
 }

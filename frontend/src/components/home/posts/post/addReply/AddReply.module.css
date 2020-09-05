@@ -1,13 +1,13 @@
-.reply {
+.addReply {
   display: flex;
 }
 
-.reply img {
+.addReply img {
   width: 30px;
   border-radius: 50%;
 }
 
-.reply > textarea {
+.addReply > textarea {
   display: block;
   font-size: 14px;
   width: 100%;

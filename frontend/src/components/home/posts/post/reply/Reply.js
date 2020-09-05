@@ -1,26 +1,74 @@
-import React from 'react'
+import React, { useState } from 'react'
 import profile from 'images/profile.png'
-import style from './Reply.module.css'
-import { buttons } from '../../../Buttons.module.css'
+import EditPost from '../editPost/EditPost'
+import PostHead from '../postHead/PostHead'
+import Dropdown from '../dropdown/Dropdown'
+import Actions from '../actions/Actions'
+import AddReply from '../addReply/AddReply'
+import style from '../Post.module.css'
 
-function Reply({ reply, changeReply, submitReply, closeAddReply, opacity }) {
+function Reply({ reply }) {
+  const [displayReplyDropdown, setDisplayReplyDropdown] = useState(false)
+  const openReplyDropdown = () => setDisplayReplyDropdown(true)
+  const closeReplyDropdown = () => setDisplayReplyDropdown(false)
+
+  const [displayEditReply, setDisplayEditReply] = useState(false)
+  const openEditReply = () => {
+    setDisplayEditReply(true)
+    closeReplyDropdown()
+  }
+  const closeEditReply = () => setDisplayEditReply(false)
+
+  const [displayAddReplyToReply, setDisplayAddReplyToReply] = useState(false)
+  const openAddReplyToReply = () => setDisplayAddReplyToReply(true)
+  const closeAddReplyToReply = () => setDisplayAddReplyToReply(false)
+
+  const [replyToReply, setReplyToReply] = useState('')
+
   return (
     <>
       <div className={style.reply}>
-        <span>
-          <img src={profile} alt="profile picture" />
-        </span>
-        <textarea
-          value={reply}
-          onChange={changeReply}
-          placeholder="Add a reply"
-        />
-      </div>
-      <div className={buttons} style={{ marginBottom: 0 }}>
-        <button onClick={submitReply} style={{ opacity }}>
-          Reply
-        </button>
-        <button onClick={closeAddReply}>Cancel</button>
+        <a href="#">
+          <img
+            src={profile}
+            className={style.profilePic}
+            style={{ width: '30px' }}
+            alt="profile picture"
+          />
+        </a>
+        <div>
+          {displayEditReply ? (
+            <EditPost closeEditPost={closeEditReply} />
+          ) : (
+            <div className={style.replyContainer}>
+              <PostHead
+                userName={reply.userName}
+                date={reply.time}
+                openDropdown={openReplyDropdown}
+              />
+              {displayReplyDropdown && (
+                <Dropdown
+                  closeDropdown={closeReplyDropdown}
+                  openEditPost={openEditReply}
+                />
+              )}
+              <div>{reply.reply}</div>
+              <Actions
+                likes={reply.likes}
+                dislikes={reply.dislikes}
+                openAddReply={openAddReplyToReply}
+              />
+              {displayAddReplyToReply && (
+                <AddReply
+                  reply={replyToReply}
+                  changeReply={e => setReplyToReply(e.target.value)}
+                  closeAddReply={closeAddReplyToReply}
+                  opacity={replyToReply ? 1 : 0.8}
+                />
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </>
   )

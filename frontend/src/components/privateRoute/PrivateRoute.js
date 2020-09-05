@@ -9,7 +9,7 @@ function PrivateRoute({ children, setUserName, ...rest }) {
     fetch('/auth', { method: 'POST' })
       .then(response => response.json())
       .then(data => {
-        setLoggedIn(data.loggedIn)
+        setLoggedIn(data.userName)
         setUserName(data.userName)
       })
       .catch(console.log)

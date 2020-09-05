@@ -42,7 +42,7 @@ app.use(
 )
 
 app.post('/auth', (req, res) => {
-  res.json({ loggedIn: !!req.session.userID, userName: req.session.userName })
+  res.json({ userName: req.session.userName })
 })
 
 app.post('/signup', async (req, res) => {
@@ -139,8 +139,17 @@ app.get('/posts', async (req, res) => {
   const col = db.collection('posts')
 
   try {
-    const posts = await col.find().toArray()
-    res.json(posts)
+    const posts = await col.find().sort({ _id: -1 }).toArray()
+
+    const userLikedThesePosts = posts.map(post =>
+      post.likedBy.includes(req.session.userID)
+    )
+    const _posts = posts.map((post, i) => {
+      delete post.likedBy, delete post.dislikedBy
+      return { ...post, userLikedThisPost: userLikedThesePosts[i] }
+    })
+
+    res.json(_posts)
   } catch (err) {
     console.log(err)
   }
@@ -149,9 +158,20 @@ app.get('/posts', async (req, res) => {
 app.post('/posts', async (req, res) => {
   const col = db.collection('posts')
 
+  const post = {
+    userName: req.session.userName,
+    post: req.body.post,
+    time: Date.now(),
+    likedBy: [],
+    likes: 0,
+    dislikedBy: [],
+    dislikes: 0,
+    replies: [],
+  }
+
   try {
-    col.insertOne(req.body)
-    res.end()
+    const result = await col.insertOne(post)
+    res.json(result.ops[0])
   } catch (err) {
     console.log(err)
   }
