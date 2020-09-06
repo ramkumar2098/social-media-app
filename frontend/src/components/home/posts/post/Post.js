@@ -10,7 +10,7 @@ import { ReactComponent as CloseDropdownCaret } from 'SVGs/CloseDropdownCaret.sv
 import Reply from './reply/Reply'
 import style from './Post.module.css'
 
-function Post({ post }) {
+function Post({ post, posts, setPosts }) {
   const [displayDropdown, setDisplayDropdown] = useState(false)
   const openDropdown = () => setDisplayDropdown(true)
   const closeDropdown = () => setDisplayDropdown(false)
@@ -27,8 +27,33 @@ function Post({ post }) {
   const closeAddReply = () => setDisplayAddReply(false)
 
   const [reply, setReply] = useState('')
-
   const [displayReplies, setDisplayReplies] = useState(false)
+  const [loading, setLoading] = useState(false)
+
+  const addReply = () => {
+    if (!reply) return
+    setLoading(true)
+
+    fetch('/replies', {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ _id: post._id, reply }),
+    })
+      .then(response => response.json())
+      .then(reply => {
+        const _post = post
+        _post.replies.push(reply)
+
+        const index = posts.findIndex(post => post._id === _post._id)
+        const _posts = [...posts]
+        _posts[index] = _post
+
+        setReply('')
+        setLoading(false)
+        setPosts(_posts)
+      })
+      .catch(console.log)
+  }
 
   return (
     <div className={style.post}>
@@ -65,9 +90,9 @@ function Post({ post }) {
               <AddReply
                 reply={reply}
                 changeReply={e => setReply(e.target.value)}
-                // addReply
+                addReply={addReply}
                 closeAddReply={closeAddReply}
-                opacity={reply ? 1 : 0.8}
+                loading={loading}
               />
             )}
           </>

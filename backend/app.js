@@ -42,7 +42,7 @@ app.use(
 )
 
 app.post('/auth', (req, res) => {
-  res.json({ userName: req.session.userName })
+  res.json({ loggedIn: !!req.session.userID })
 })
 
 app.post('/signup', async (req, res) => {
@@ -144,10 +144,10 @@ app.get('/posts', async (req, res) => {
     const userLikedThesePosts = posts.map(post =>
       post.likedBy.includes(req.session.userID)
     )
-    const _posts = posts.map((post, i) => {
-      delete post.likedBy, delete post.dislikedBy
-      return { ...post, userLikedThisPost: userLikedThesePosts[i] }
-    })
+    const _posts = posts.map((post, i) => ({
+      ...post,
+      userLikedThisPost: userLikedThesePosts[i],
+    }))
 
     res.json(_posts)
   } catch (err) {
@@ -180,16 +180,25 @@ app.post('/posts', async (req, res) => {
 app.post('/replies', async (req, res) => {
   const col = db.collection('posts')
 
+  const reply = {
+    id: mongodb.ObjectId(),
+    userName: req.session.userName,
+    reply: req.body.reply,
+    time: Date.now(),
+    likedBy: [],
+    likes: 0,
+    dislikedBy: [],
+    dislikes: 0,
+  }
+
   try {
+    res.json(reply)
     col.updateOne(
-      { _id: mongodb.ObjectId('5f50c1b5bc9cce2ada62c82f') },
+      { _id: mongodb.ObjectId(req.body._id) },
       {
-        $push: {
-          replies: { id: mongodb.ObjectId(), ...req.body },
-        },
+        $push: { replies: reply },
       }
     )
-    res.end()
   } catch (err) {
     console.log(err)
   }

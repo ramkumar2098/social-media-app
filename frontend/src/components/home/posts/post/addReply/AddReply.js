@@ -1,9 +1,10 @@
 import React from 'react'
 import profile from 'images/profile.png'
+import Spinner from 'components/spinner/Spinner'
 import style from './AddReply.module.css'
 import { buttons } from '../../../Buttons.module.css'
 
-function AddReply({ reply, changeReply, addReply, closeAddReply, opacity }) {
+function AddReply({ reply, changeReply, addReply, closeAddReply, loading }) {
   return (
     <>
       <div className={style.addReply}>
@@ -17,8 +18,12 @@ function AddReply({ reply, changeReply, addReply, closeAddReply, opacity }) {
         />
       </div>
       <div className={buttons} style={{ marginBottom: 0 }}>
-        <button onClick={addReply} style={{ opacity }}>
-          Reply
+        <button
+          onClick={addReply}
+          disabled={loading}
+          style={{ opacity: loading ? 0.8 : reply ? 1 : 0.8 }}
+        >
+          {loading && <Spinner />}Reply
         </button>
         <button onClick={closeAddReply}>Cancel</button>
       </div>

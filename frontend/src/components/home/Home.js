@@ -12,11 +12,11 @@ function Home({ setDisplayBurger }) {
 
   const [post, setPost] = useState('')
   const [posts, setPosts] = useState([])
-  const [spinner, setSpinner] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const addPost = () => {
     if (!post) return
-    setSpinner(true)
+    setLoading(true)
 
     fetch('/posts', {
       method: 'POST',
@@ -26,7 +26,7 @@ function Home({ setDisplayBurger }) {
       .then(response => response.json())
       .then(post => {
         setPost('')
-        setSpinner(false)
+        setLoading(false)
         setPosts([post, ...posts])
       })
       .catch(console.log)
@@ -46,9 +46,9 @@ function Home({ setDisplayBurger }) {
         changePost={e => setPost(e.target.value)}
         addPost={addPost}
         clearPost={() => setPost('')}
-        spinner={spinner}
+        loading={loading}
       />
-      {posts.length > 0 && <Posts posts={posts} />}
+      {posts.length > 0 && <Posts posts={posts} setPosts={setPosts} />}
     </div>
   )
 }

@@ -63,7 +63,6 @@ function Reply({ reply }) {
                   reply={replyToReply}
                   changeReply={e => setReplyToReply(e.target.value)}
                   closeAddReply={closeAddReplyToReply}
-                  opacity={replyToReply ? 1 : 0.8}
                 />
               )}
             </div>

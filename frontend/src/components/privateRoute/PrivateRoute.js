@@ -2,16 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Route, Redirect } from 'react-router-dom'
 import Spinner from './spinner/Spinner'
 
-function PrivateRoute({ children, setUserName, ...rest }) {
-  const [loggedIn, setLoggedIn] = useState('verifying...')
+function PrivateRoute({ children, ...rest }) {
+  const [loggedIn, setLoggedIn] = useState('verifying')
 
   useEffect(() => {
     fetch('/auth', { method: 'POST' })
       .then(response => response.json())
-      .then(data => {
-        setLoggedIn(data.userName)
-        setUserName(data.userName)
-      })
+      .then(data => setLoggedIn(data.loggedIn))
       .catch(console.log)
   }, [])
 
@@ -19,7 +16,7 @@ function PrivateRoute({ children, setUserName, ...rest }) {
     <Route
       {...rest}
       render={() =>
-        loggedIn === 'verifying...' ? (
+        loggedIn === 'verifying' ? (
           <Spinner />
         ) : loggedIn ? (
           children
