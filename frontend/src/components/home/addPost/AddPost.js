@@ -10,7 +10,7 @@ function AddPost({ post, changePost, addPost, clearPost, loading }) {
         value={post}
         onChange={changePost}
         className={style.addPost}
-        placeholder="Your posts are public"
+        placeholder="Add a public post"
       ></textarea>
       <div className={buttons}>
         <button

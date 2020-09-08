@@ -4,3 +4,8 @@
   max-width: 100%;
   height: 70px;
 }
+
+
+.editPost::placeholder {
+  font-size: 14px;
+}

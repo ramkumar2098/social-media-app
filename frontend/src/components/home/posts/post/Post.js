@@ -18,6 +18,7 @@ function Post({ post, posts, setPosts }) {
   const [displayEditPost, setDisplayEditPost] = useState(false)
   const openEditPost = () => {
     setDisplayEditPost(true)
+    setEditedPost(post.post)
     closeDropdown()
   }
   const closeEditPost = () => setDisplayEditPost(false)
@@ -50,6 +51,35 @@ function Post({ post, posts, setPosts }) {
 
         setReply('')
         setLoading(false)
+        closeAddReply()
+        setPosts(_posts)
+      })
+      .catch(console.log)
+  }
+
+  const [editedPost, setEditedPost] = useState(post.post)
+  const [updatePostLoading, setUpdatePostLoading] = useState(false)
+
+  const updatePost = () => {
+    if (!editedPost) return
+    setUpdatePostLoading(true)
+
+    fetch('/editPost', {
+      method: 'PUT',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ _id: post._id, editedPost }),
+    })
+      .then(() => {
+        const _post = post
+        _post.post = editedPost
+        _post.edited = true
+
+        const index = posts.findIndex(post => post._id === _post._id)
+        const _posts = [...posts]
+        _posts[index] = _post
+
+        setUpdatePostLoading(false)
+        closeEditPost()
         setPosts(_posts)
       })
       .catch(console.log)
@@ -62,13 +92,20 @@ function Post({ post, posts, setPosts }) {
       </a>
       <div>
         {displayEditPost ? (
-          <EditPost closeEditPost={closeEditPost} />
+          <EditPost
+            editedPost={editedPost}
+            changePost={e => setEditedPost(e.target.value)}
+            updatePost={updatePost}
+            closeEditPost={closeEditPost}
+            updatePostLoading={updatePostLoading}
+          />
         ) : (
           <>
             <div className={style.postContainer}>
               <PostHead
                 userName={post.userName}
                 date={post.time}
+                edited={post.edited}
                 openDropdown={openDropdown}
               />
               {displayDropdown && (
@@ -112,7 +149,15 @@ function Post({ post, posts, setPosts }) {
           </button>
         )}
         {displayReplies &&
-          post.replies.map(reply => <Reply key={reply.id} reply={reply} />)}
+          post.replies.map(reply => (
+            <Reply
+              key={reply.id}
+              reply={reply}
+              post={post}
+              posts={posts}
+              setPosts={setPosts}
+            />
+          ))}
       </div>
     </div>
   )

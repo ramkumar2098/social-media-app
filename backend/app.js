@@ -162,6 +162,7 @@ app.post('/posts', async (req, res) => {
     userName: req.session.userName,
     post: req.body.post,
     time: Date.now(),
+    edited: false,
     likedBy: [],
     likes: 0,
     dislikedBy: [],
@@ -185,6 +186,7 @@ app.post('/replies', async (req, res) => {
     userName: req.session.userName,
     reply: req.body.reply,
     time: Date.now(),
+    edited: false,
     likedBy: [],
     likes: 0,
     dislikedBy: [],
@@ -199,6 +201,46 @@ app.post('/replies', async (req, res) => {
         $push: { replies: reply },
       }
     )
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+app.put('/editPost', async (req, res) => {
+  const col = db.collection('posts')
+
+  try {
+    col.updateOne(
+      { _id: mongodb.ObjectId(req.body._id) },
+      {
+        $set: { post: req.body.editedPost, edited: true },
+      }
+    )
+    res.end()
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+app.put('/editReply', async (req, res) => {
+  const col = db.collection('posts')
+
+  try {
+    const result = await col.findOneAndUpdate(
+      {
+        _id: mongodb.ObjectId(req.body._id),
+        'replies.id': mongodb.ObjectId(req.body.id),
+      },
+      {
+        $set: {
+          'replies.$.reply': req.body.editedReply,
+          'replies.$.edited': true,
+        },
+      },
+      { returnOriginal: false }
+    )
+
+    res.json(result.value)
   } catch (err) {
     console.log(err)
   }

@@ -10,13 +10,14 @@
   color: #000;
 }
 
-.postHead time {
+.date {
+  font-size: 15.5px;
   white-space: nowrap;
   opacity: 0.7;
   cursor: pointer;
 }
 
-.postHead time:hover {
+.date:hover {
   opacity: 1;
 }
 
