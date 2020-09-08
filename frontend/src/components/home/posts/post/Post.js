@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Popup from './popup/Popup'
 import profile from 'images/profile.png'
 import EditPost from './editPost/EditPost'
 import PostHead from './postHead/PostHead'
@@ -24,7 +25,10 @@ function Post({ post, posts, setPosts }) {
   const closeEditPost = () => setDisplayEditPost(false)
 
   const [displayAddReply, setDisplayAddReply] = useState(false)
-  const openAddReply = () => setDisplayAddReply(true)
+  const openAddReply = () => {
+    setDisplayAddReply(true)
+    setReply('')
+  }
   const closeAddReply = () => setDisplayAddReply(false)
 
   const [reply, setReply] = useState('')
@@ -53,6 +57,7 @@ function Post({ post, posts, setPosts }) {
         setLoading(false)
         closeAddReply()
         setPosts(_posts)
+        setDisplayReplies(true)
       })
       .catch(console.log)
   }
@@ -85,81 +90,120 @@ function Post({ post, posts, setPosts }) {
       .catch(console.log)
   }
 
+  const [displayPopup, setDisplayPopup] = useState(false)
+  const [deletePostLoading, setDeletePostLoading] = useState(false)
+
+  const deletePost = () => {
+    setDeletePostLoading(true)
+
+    fetch('/deletePost', {
+      method: 'DELETE',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ _id: post._id }),
+    })
+      .then(() => {
+        const _post = post
+        const _posts = posts.filter(post => post._id !== _post._id)
+
+        setDeletePostLoading(false)
+        setPosts(_posts)
+      })
+      .catch(console.log)
+  }
+
   return (
-    <div className={style.post}>
-      <a href="#">
-        <img src={profile} className={style.profilePic} alt="profile picture" />
-      </a>
-      <div>
-        {displayEditPost ? (
-          <EditPost
-            editedPost={editedPost}
-            changePost={e => setEditedPost(e.target.value)}
-            updatePost={updatePost}
-            closeEditPost={closeEditPost}
-            updatePostLoading={updatePostLoading}
+    <>
+      {displayPopup && (
+        <Popup
+          message={
+            post.replies.length
+              ? 'Delete your post and all of its replies permanently?'
+              : 'Delete your post permanently?'
+          }
+          deletePost={deletePost}
+          deletePostLoading={deletePostLoading}
+          closePopup={() => setDisplayPopup(false)}
+        />
+      )}
+      <div className={style.post}>
+        <a href="#">
+          <img
+            src={profile}
+            className={style.profilePic}
+            alt="profile picture"
           />
-        ) : (
-          <>
-            <div className={style.postContainer}>
-              <PostHead
-                userName={post.userName}
-                date={post.time}
-                edited={post.edited}
-                openDropdown={openDropdown}
-              />
-              {displayDropdown && (
-                <Dropdown
-                  closeDropdown={closeDropdown}
-                  openEditPost={openEditPost}
-                  // deletePost
+        </a>
+        <div>
+          {displayEditPost ? (
+            <EditPost
+              editedPost={editedPost}
+              changePost={e => setEditedPost(e.target.value)}
+              updatePost={updatePost}
+              closeEditPost={closeEditPost}
+              updatePostLoading={updatePostLoading}
+            />
+          ) : (
+            <>
+              <div className={style.postContainer}>
+                <PostHead
+                  userName={post.userName}
+                  date={post.date}
+                  edited={post.edited}
+                  openDropdown={openDropdown}
+                />
+                {displayDropdown && (
+                  <Dropdown
+                    closeDropdown={closeDropdown}
+                    openEditPost={openEditPost}
+                    openPopup={() => setDisplayPopup(true)}
+                  />
+                )}
+                <div>{post.post}</div>
+                <Actions
+                  likes={post.likes}
+                  dislikes={post.dislikes}
+                  userLikedThisPost={post.userLikedThisPost}
+                  openAddReply={openAddReply}
+                />
+              </div>
+              {displayAddReply && (
+                <AddReply
+                  reply={reply}
+                  changeReply={e => setReply(e.target.value)}
+                  addReply={addReply}
+                  closeAddReply={closeAddReply}
+                  loading={loading}
                 />
               )}
-              <div>{post.post}</div>
-              <Actions
-                likes={post.likes}
-                dislikes={post.dislikes}
-                userLikedThisPost={post.userLikedThisPost}
-                openAddReply={openAddReply}
-              />
-            </div>
-            {displayAddReply && (
-              <AddReply
+            </>
+          )}
+          {post.replies.length > 0 && (
+            <button
+              onClick={() => setDisplayReplies(!displayReplies)}
+              className={style.showRepliesBtn}
+            >
+              {displayReplies ? <CloseDropdownCaret /> : <OpenDropdownCaret />}
+              <span>
+                {displayReplies ? 'Hide' : 'Show'}
+                {post.replies.length > 1
+                  ? ` ${post.replies.length} replies`
+                  : ' reply'}
+              </span>
+            </button>
+          )}
+          {displayReplies &&
+            post.replies.map(reply => (
+              <Reply
+                key={reply.id}
                 reply={reply}
-                changeReply={e => setReply(e.target.value)}
-                addReply={addReply}
-                closeAddReply={closeAddReply}
-                loading={loading}
+                post={post}
+                posts={posts}
+                setPosts={setPosts}
               />
-            )}
-          </>
-        )}
-        {post.replies.length > 0 && (
-          <button
-            onClick={() => setDisplayReplies(!displayReplies)}
-            className={style.showRepliesBtn}
-          >
-            {displayReplies ? <CloseDropdownCaret /> : <OpenDropdownCaret />}
-            <span>
-              {displayReplies ? 'Hide' : 'Show'}
-              {post.replies.length > 1
-                ? ` ${post.replies.length} replies`
-                : ' reply'}
-            </span>
-          </button>
-        )}
-        {displayReplies &&
-          post.replies.map(reply => (
-            <Reply
-              key={reply.id}
-              reply={reply}
-              post={post}
-              posts={posts}
-              setPosts={setPosts}
-            />
-          ))}
+            ))}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 

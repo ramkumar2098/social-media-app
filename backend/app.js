@@ -161,7 +161,7 @@ app.post('/posts', async (req, res) => {
   const post = {
     userName: req.session.userName,
     post: req.body.post,
-    time: Date.now(),
+    date: Date.now(),
     edited: false,
     likedBy: [],
     likes: 0,
@@ -185,7 +185,7 @@ app.post('/replies', async (req, res) => {
     id: mongodb.ObjectId(),
     userName: req.session.userName,
     reply: req.body.reply,
-    time: Date.now(),
+    date: Date.now(),
     edited: false,
     likedBy: [],
     likes: 0,
@@ -235,6 +235,37 @@ app.put('/editReply', async (req, res) => {
         $set: {
           'replies.$.reply': req.body.editedReply,
           'replies.$.edited': true,
+        },
+      },
+      { returnOriginal: false }
+    )
+
+    res.json(result.value)
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+app.delete('/deletePost', async (req, res) => {
+  const col = db.collection('posts')
+
+  try {
+    col.deleteOne({ _id: mongodb.ObjectId(req.body._id) })
+    res.end()
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+app.delete('/deleteReply', async (req, res) => {
+  const col = db.collection('posts')
+
+  try {
+    const result = await col.findOneAndUpdate(
+      { _id: mongodb.ObjectId(req.body._id) },
+      {
+        $pull: {
+          replies: { id: mongodb.ObjectId(req.body.id) },
         },
       },
       { returnOriginal: false }

@@ -15,6 +15,7 @@ function AddReply({ reply, changeReply, addReply, closeAddReply, loading }) {
           value={reply}
           onChange={changeReply}
           placeholder="Add a reply"
+          autoFocus
         />
       </div>
       <div className={buttons} style={{ marginBottom: 0 }}>

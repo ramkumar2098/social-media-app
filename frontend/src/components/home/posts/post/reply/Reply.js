@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Popup from '../popup/Popup'
 import profile from 'images/profile.png'
 import EditPost from '../editPost/EditPost'
 import PostHead from '../postHead/PostHead'
@@ -21,7 +22,10 @@ function Reply({ reply, post, posts, setPosts }) {
   const closeEditReply = () => setDisplayEditReply(false)
 
   const [displayAddReplyToReply, setDisplayAddReplyToReply] = useState(false)
-  const openAddReplyToReply = () => setDisplayAddReplyToReply(true)
+  const openAddReplyToReply = () => {
+    setDisplayAddReplyToReply(true)
+    setReplyToReply('')
+  }
   const closeAddReplyToReply = () => setDisplayAddReplyToReply(false)
 
   const [replyToReply, setReplyToReply] = useState('')
@@ -78,8 +82,39 @@ function Reply({ reply, post, posts, setPosts }) {
       .catch(console.log)
   }
 
+  const [displayPopup, setDisplayPopup] = useState(false)
+  const [deleteReplyLoading, setDeleteReplyLoading] = useState(false)
+
+  const deleteReply = () => {
+    setDeleteReplyLoading(true)
+
+    fetch('/deleteReply', {
+      method: 'DELETE',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ _id: post._id, id: reply.id }),
+    })
+      .then(response => response.json())
+      .then(_post => {
+        const index = posts.findIndex(post => post._id === _post._id)
+        const _posts = [...posts]
+        _posts[index] = _post
+
+        setDeleteReplyLoading(false)
+        setPosts(_posts)
+      })
+      .catch(console.log)
+  }
+
   return (
     <>
+      {displayPopup && (
+        <Popup
+          message="Delete your reply permanently?"
+          deletePost={deleteReply}
+          deletePostLoading={deleteReplyLoading}
+          closePopup={() => setDisplayPopup(false)}
+        />
+      )}
       <div className={style.reply}>
         <a href="#">
           <img
@@ -102,7 +137,7 @@ function Reply({ reply, post, posts, setPosts }) {
             <div className={style.replyContainer}>
               <PostHead
                 userName={reply.userName}
-                date={reply.time}
+                date={reply.date}
                 edited={reply.edited}
                 openDropdown={openReplyDropdown}
               />
@@ -110,6 +145,7 @@ function Reply({ reply, post, posts, setPosts }) {
                 <Dropdown
                   closeDropdown={closeReplyDropdown}
                   openEditPost={openEditReply}
+                  openPopup={() => setDisplayPopup(true)}
                 />
               )}
               <div>{reply.reply}</div>

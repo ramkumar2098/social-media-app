@@ -3,7 +3,7 @@ import { ReactComponent as Edit } from 'SVGs/Edit.svg'
 import { ReactComponent as Delete } from 'SVGs/Delete.svg'
 import style from './Dropdown.module.css'
 
-function Dropdown({ closeDropdown, openEditPost, deletePost }) {
+function Dropdown({ closeDropdown, openEditPost, openPopup }) {
   useEffect(() => {
     const handleEvent = e => (e.keyCode === 27 || !e.keyCode) && closeDropdown()
 
@@ -23,7 +23,7 @@ function Dropdown({ closeDropdown, openEditPost, deletePost }) {
         <Edit />
         <span>{'Edit    '}</span>
       </button>
-      <button onClick={deletePost}>
+      <button onClick={openPopup}>
         <Delete />
         <span>Delete</span>
       </button>

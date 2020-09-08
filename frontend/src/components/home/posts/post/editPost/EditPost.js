@@ -15,8 +15,13 @@ function EditPost({
       <textarea
         value={editedPost}
         onChange={changePost}
+        onFocus={e => {
+          e.target.value = ''
+          e.target.value = editedPost
+        }}
         className={style.editPost}
         placeholder="Edit your post"
+        autoFocus
       />
       <div className={buttons} style={{ marginBottom: 0 }}>
         <button
