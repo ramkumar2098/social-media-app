@@ -144,9 +144,13 @@ app.get('/posts', async (req, res) => {
     const userLikedThesePosts = posts.map(post =>
       post.likedBy.includes(req.session.userID)
     )
+    const userDislikedThesePosts = posts.map(post =>
+      post.dislikedBy.includes(req.session.userID)
+    )
     const _posts = posts.map((post, i) => ({
       ...post,
       userLikedThisPost: userLikedThesePosts[i],
+      userDislikedThisPost: userDislikedThesePosts[i],
     }))
 
     res.json(_posts)
@@ -155,7 +159,7 @@ app.get('/posts', async (req, res) => {
   }
 })
 
-app.post('/posts', async (req, res) => {
+app.post('/addPost', async (req, res) => {
   const col = db.collection('posts')
 
   const post = {
@@ -178,7 +182,7 @@ app.post('/posts', async (req, res) => {
   }
 })
 
-app.post('/replies', async (req, res) => {
+app.post('/addReply', async (req, res) => {
   const col = db.collection('posts')
 
   const reply = {
@@ -272,6 +276,84 @@ app.delete('/deleteReply', async (req, res) => {
     )
 
     res.json(result.value)
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+app.post('/likePost', async (req, res) => {
+  const col = db.collection('posts')
+
+  try {
+    const post = await col.findOne({ _id: mongodb.ObjectId(req.body._id) })
+
+    const userDislikedThisPost = post.dislikedBy.includes(req.session.userID)
+
+    col.updateOne(
+      { _id: mongodb.ObjectId(req.body._id) },
+      {
+        $push: { likedBy: req.session.userID },
+        $inc: { likes: 1, dislikes: userDislikedThisPost ? -1 : 0 },
+        $pull: { dislikedBy: userDislikedThisPost && req.session.userID },
+      }
+    )
+    res.end()
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+app.post('/unlikePost', async (req, res) => {
+  const col = db.collection('posts')
+
+  try {
+    col.updateOne(
+      { _id: mongodb.ObjectId(req.body._id) },
+      {
+        $pull: { likedBy: req.session.userID },
+        $inc: { likes: -1 },
+      }
+    )
+    res.end()
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+app.post('/dislikePost', async (req, res) => {
+  const col = db.collection('posts')
+
+  try {
+    const post = await col.findOne({ _id: mongodb.ObjectId(req.body._id) })
+
+    const userLikedThisPost = post.likedBy.includes(req.session.userID)
+
+    col.updateOne(
+      { _id: mongodb.ObjectId(req.body._id) },
+      {
+        $push: { dislikedBy: req.session.userID },
+        $inc: { dislikes: 1, likes: userLikedThisPost ? -1 : 0 },
+        $pull: { likedBy: userLikedThisPost && req.session.userID },
+      }
+    )
+    res.end()
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+app.post('/removeDislikePost', async (req, res) => {
+  const col = db.collection('posts')
+
+  try {
+    col.updateOne(
+      { _id: mongodb.ObjectId(req.body._id) },
+      {
+        $pull: { dislikedBy: req.session.userID },
+        $inc: { dislikes: -1 },
+      }
+    )
+    res.end()
   } catch (err) {
     console.log(err)
   }

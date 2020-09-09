@@ -18,7 +18,7 @@ function Home({ setDisplayBurger }) {
     if (!post) return
     setLoading(true)
 
-    fetch('/posts', {
+    fetch('/addPost', {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ post }),

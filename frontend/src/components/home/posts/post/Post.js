@@ -39,7 +39,7 @@ function Post({ post, posts, setPosts }) {
     if (!reply) return
     setLoading(true)
 
-    fetch('/replies', {
+    fetch('/addReply', {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id, reply }),
@@ -111,6 +111,56 @@ function Post({ post, posts, setPosts }) {
       .catch(console.log)
   }
 
+  const toggleLikePost = () => {
+    const url = post.userLikedThisPost ? '/unlikePost' : 'likePost'
+
+    const _post = post
+    _post.likes = post.userLikedThisPost ? post.likes - 1 : post.likes + 1
+    _post.userLikedThisPost = !post.userLikedThisPost
+
+    _post.dislikes = post.userDislikedThisPost
+      ? post.dislikes - 1
+      : post.dislikes
+    _post.userDislikedThisPost = post.userDislikedThisPost && false
+
+    const index = posts.findIndex(post => post._id === _post._id)
+    const _posts = [...posts]
+    _posts[index] = _post
+
+    setPosts(_posts)
+
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ _id: post._id }),
+    }).catch(console.log)
+  }
+
+  const toggleDislikePost = () => {
+    const url = post.userDislikedThisPost ? '/removeDislikePost' : 'dislikePost'
+
+    const _post = post
+    _post.dislikes = post.userDislikedThisPost
+      ? post.dislikes - 1
+      : post.dislikes + 1
+    _post.userDislikedThisPost = !post.userDislikedThisPost
+
+    _post.likes = post.userLikedThisPost ? post.likes - 1 : post.likes
+    _post.userLikedThisPost = post.userLikedThisPost && false
+
+    const index = posts.findIndex(post => post._id === _post._id)
+    const _posts = [...posts]
+    _posts[index] = _post
+
+    setPosts(_posts)
+
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ _id: post._id }),
+    }).catch(console.log)
+  }
+
   return (
     <>
       {displayPopup && (
@@ -160,9 +210,12 @@ function Post({ post, posts, setPosts }) {
                 )}
                 <div>{post.post}</div>
                 <Actions
-                  likes={post.likes}
-                  dislikes={post.dislikes}
+                  toggleLikePost={toggleLikePost}
                   userLikedThisPost={post.userLikedThisPost}
+                  likes={post.likes}
+                  toggleDislikePost={toggleDislikePost}
+                  userDislikedThisPost={post.userDislikedThisPost}
+                  dislikes={post.dislikes}
                   openAddReply={openAddReply}
                 />
               </div>

@@ -35,7 +35,7 @@ function Reply({ reply, post, posts, setPosts }) {
     if (!replyToReply) return
     setLoading(true)
 
-    fetch('/replies', {
+    fetch('/addReply', {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id, reply: replyToReply }),
