@@ -105,6 +105,56 @@ function Reply({ reply, post, posts, setPosts }) {
       .catch(console.log)
   }
 
+  const toggleLikeReply = () => {
+    const url = reply.userLikedThisReply ? '/unlikeReply' : 'likeReply'
+
+    reply.likes = reply.userLikedThisReply ? reply.likes - 1 : reply.likes + 1
+    reply.userLikedThisReply = !reply.userLikedThisReply
+
+    reply.dislikes = reply.userDislikedThisReply
+      ? reply.dislikes - 1
+      : reply.dislikes
+    reply.userDislikedThisReply = reply.userDislikedThisReply && false
+
+    const index = posts.findIndex(_post => _post._id === post._id)
+    const _posts = [...posts]
+    _posts[index] = post
+
+    setPosts(_posts)
+
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ _id: post._id, id: reply.id }),
+    }).catch(console.log)
+  }
+
+  const toggleDislikeReply = () => {
+    const url = reply.userDislikedThisReply
+      ? '/removeDislikeReply'
+      : 'dislikeReply'
+
+    reply.dislikes = reply.userDislikedThisReply
+      ? reply.dislikes - 1
+      : reply.dislikes + 1
+    reply.userDislikedThisReply = !reply.userDislikedThisReply
+
+    reply.likes = reply.userLikedThisReply ? reply.likes - 1 : reply.likes
+    reply.userLikedThisReply = reply.userLikedThisReply && false
+
+    const index = posts.findIndex(_post => _post._id === post._id)
+    const _posts = [...posts]
+    _posts[index] = post
+
+    setPosts(_posts)
+
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({ _id: post._id, id: reply.id }),
+    }).catch(console.log)
+  }
+
   return (
     <>
       {displayPopup && (
@@ -150,7 +200,11 @@ function Reply({ reply, post, posts, setPosts }) {
               )}
               <div>{reply.reply}</div>
               <Actions
+                toggleLikePost={toggleLikeReply}
+                userLikedThisPost={reply.userLikedThisReply}
                 likes={reply.likes}
+                toggleDislikePost={toggleDislikeReply}
+                userDislikedThisPost={reply.userDislikedThisReply}
                 dislikes={reply.dislikes}
                 openAddReply={openAddReplyToReply}
               />
