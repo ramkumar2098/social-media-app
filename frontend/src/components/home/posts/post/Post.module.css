@@ -34,9 +34,13 @@
   fill: #909090;
 }
 
+.readMoreBtn {
+  font-weight: 600;
+  color: #4d4d4d;
+}
+
+.readMoreBtn,
 .showRepliesBtn {
-  clear: right;
-  display: block;
   font-size: 15px;
   background-color: #fff;
   padding-left: 0;
@@ -46,6 +50,8 @@
   cursor: pointer;
 }
 
+.readMoreBtn:hover,
+.readMoreBtn:focus,
 .showRepliesBtn:hover,
 .showRepliesBtn:focus {
   opacity: 1;

@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import Popup from '../popup/Popup'
+import { POST_MAX_LENGTH, POST_MAX_VISIBLE_LENGTH } from 'appConstants'
 import profile from 'images/profile.png'
 import EditPost from '../editPost/EditPost'
 import PostHead from '../postHead/PostHead'
 import Dropdown from '../dropdown/Dropdown'
+import Popup from '../popup/Popup'
 import Actions from '../actions/Actions'
 import AddReply from '../addReply/AddReply'
 import style from '../Post.module.css'
@@ -32,7 +33,7 @@ function Reply({ reply, post, posts, setPosts }) {
   const [loading, setLoading] = useState(false)
 
   const addReplyToReply = () => {
-    if (!replyToReply) return
+    if (!replyToReply || replyToReply.length > POST_MAX_LENGTH) return
     setLoading(true)
 
     fetch('/addReply', {
@@ -42,17 +43,13 @@ function Reply({ reply, post, posts, setPosts }) {
     })
       .then(response => response.json())
       .then(reply => {
-        const _post = post
-        _post.replies.push(reply)
-
-        const index = posts.findIndex(post => post._id === _post._id)
-        const _posts = [...posts]
-        _posts[index] = _post
+        reply.userAuthoredThisReply = true
+        post.replies.push(reply)
 
         setReplyToReply('')
         setLoading(false)
         closeAddReplyToReply()
-        setPosts(_posts)
+        setPosts([...posts])
       })
       .catch(console.log)
   }
@@ -61,7 +58,7 @@ function Reply({ reply, post, posts, setPosts }) {
   const [updateReplyLoading, setUpdateReplyLoading] = useState(false)
 
   const updateReply = () => {
-    if (!editedReply) return
+    if (!editedReply || editedReply.length > POST_MAX_LENGTH) return
     setUpdateReplyLoading(true)
 
     fetch('/editReply', {
@@ -69,15 +66,13 @@ function Reply({ reply, post, posts, setPosts }) {
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id, id: reply.id, editedReply }),
     })
-      .then(response => response.json())
-      .then(_post => {
-        const index = posts.findIndex(post => post._id === _post._id)
-        const _posts = [...posts]
-        _posts[index] = _post
+      .then(() => {
+        reply.edited = true
+        reply.reply = editedReply
 
         setUpdateReplyLoading(false)
         closeEditReply()
-        setPosts(_posts)
+        setPosts([...posts])
       })
       .catch(console.log)
   }
@@ -93,14 +88,14 @@ function Reply({ reply, post, posts, setPosts }) {
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id, id: reply.id }),
     })
-      .then(response => response.json())
-      .then(_post => {
-        const index = posts.findIndex(post => post._id === _post._id)
-        const _posts = [...posts]
-        _posts[index] = _post
+      .then(() => {
+        const replyIndex = post.replies.findIndex(
+          _reply => _reply.id === reply.id
+        )
+        post.replies.splice(replyIndex, 1)
 
         setDeleteReplyLoading(false)
-        setPosts(_posts)
+        setPosts([...posts])
       })
       .catch(console.log)
   }
@@ -116,11 +111,7 @@ function Reply({ reply, post, posts, setPosts }) {
       : reply.dislikes
     reply.userDislikedThisReply = reply.userDislikedThisReply && false
 
-    const index = posts.findIndex(_post => _post._id === post._id)
-    const _posts = [...posts]
-    _posts[index] = post
-
-    setPosts(_posts)
+    setPosts([...posts])
 
     fetch(url, {
       method: 'POST',
@@ -142,11 +133,7 @@ function Reply({ reply, post, posts, setPosts }) {
     reply.likes = reply.userLikedThisReply ? reply.likes - 1 : reply.likes
     reply.userLikedThisReply = reply.userLikedThisReply && false
 
-    const index = posts.findIndex(_post => _post._id === post._id)
-    const _posts = [...posts]
-    _posts[index] = post
-
-    setPosts(_posts)
+    setPosts([...posts])
 
     fetch(url, {
       method: 'POST',
@@ -155,16 +142,13 @@ function Reply({ reply, post, posts, setPosts }) {
     }).catch(console.log)
   }
 
+  const [showAll, setShowAll] = useState(
+    reply.reply.length < POST_MAX_VISIBLE_LENGTH
+  )
+  const toggleReadMore = () => setShowAll(!showAll)
+
   return (
     <>
-      {displayPopup && (
-        <Popup
-          message="Delete your reply permanently?"
-          deletePost={deleteReply}
-          deletePostLoading={deleteReplyLoading}
-          closePopup={() => setDisplayPopup(false)}
-        />
-      )}
       <div className={style.reply}>
         <a href="#">
           <img
@@ -189,6 +173,7 @@ function Reply({ reply, post, posts, setPosts }) {
                 userName={reply.userName}
                 date={reply.date}
                 edited={reply.edited}
+                userAuthoredThisPost={reply.userAuthoredThisReply}
                 openDropdown={openReplyDropdown}
               />
               {displayReplyDropdown && (
@@ -198,7 +183,24 @@ function Reply({ reply, post, posts, setPosts }) {
                   openPopup={() => setDisplayPopup(true)}
                 />
               )}
-              <div>{reply.reply}</div>
+              {displayPopup && (
+                <Popup
+                  message="Delete your reply permanently?"
+                  deletePost={deleteReply}
+                  deletePostLoading={deleteReplyLoading}
+                  closePopup={() => setDisplayPopup(false)}
+                />
+              )}
+              <div>
+                {showAll
+                  ? reply.reply
+                  : reply.reply.slice(0, POST_MAX_VISIBLE_LENGTH)}
+              </div>
+              {reply.reply.length > POST_MAX_VISIBLE_LENGTH && (
+                <button onClick={toggleReadMore} className={style.readMoreBtn}>
+                  {showAll ? 'Show less' : 'Read more'}
+                </button>
+              )}
               <Actions
                 toggleLikePost={toggleLikeReply}
                 userLikedThisPost={reply.userLikedThisReply}

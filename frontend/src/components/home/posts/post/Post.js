@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
-import Popup from './popup/Popup'
+import { POST_MAX_LENGTH, POST_MAX_VISIBLE_LENGTH } from 'appConstants'
 import profile from 'images/profile.png'
 import EditPost from './editPost/EditPost'
 import PostHead from './postHead/PostHead'
 import Dropdown from './dropdown/Dropdown'
+import Popup from './popup/Popup'
 import Actions from './actions/Actions'
 import AddReply from './addReply/AddReply'
 import { ReactComponent as OpenDropdownCaret } from 'SVGs/OpenDropdownCaret.svg'
@@ -36,7 +37,7 @@ function Post({ post, posts, setPosts }) {
   const [loading, setLoading] = useState(false)
 
   const addReply = () => {
-    if (!reply) return
+    if (!reply || reply.length > POST_MAX_LENGTH) return
     setLoading(true)
 
     fetch('/addReply', {
@@ -46,17 +47,13 @@ function Post({ post, posts, setPosts }) {
     })
       .then(response => response.json())
       .then(reply => {
-        const _post = post
-        _post.replies.push(reply)
-
-        const index = posts.findIndex(post => post._id === _post._id)
-        const _posts = [...posts]
-        _posts[index] = _post
+        reply.userAuthoredThisReply = true
+        post.replies.push(reply)
 
         setReply('')
         setLoading(false)
         closeAddReply()
-        setPosts(_posts)
+        setPosts([...posts])
         setDisplayReplies(true)
       })
       .catch(console.log)
@@ -66,7 +63,7 @@ function Post({ post, posts, setPosts }) {
   const [updatePostLoading, setUpdatePostLoading] = useState(false)
 
   const updatePost = () => {
-    if (!editedPost) return
+    if (!editedPost || editedPost.length > POST_MAX_LENGTH) return
     setUpdatePostLoading(true)
 
     fetch('/editPost', {
@@ -75,17 +72,12 @@ function Post({ post, posts, setPosts }) {
       body: JSON.stringify({ _id: post._id, editedPost }),
     })
       .then(() => {
-        const _post = post
-        _post.post = editedPost
-        _post.edited = true
-
-        const index = posts.findIndex(post => post._id === _post._id)
-        const _posts = [...posts]
-        _posts[index] = _post
+        post.edited = true
+        post.post = editedPost
 
         setUpdatePostLoading(false)
         closeEditPost()
-        setPosts(_posts)
+        setPosts([...posts])
       })
       .catch(console.log)
   }
@@ -102,11 +94,11 @@ function Post({ post, posts, setPosts }) {
       body: JSON.stringify({ _id: post._id }),
     })
       .then(() => {
-        const _post = post
-        const _posts = posts.filter(post => post._id !== _post._id)
+        const postIndex = posts.findIndex(_post => _post._id === post._id)
+        posts.splice(postIndex, 1)
 
         setDeletePostLoading(false)
-        setPosts(_posts)
+        setPosts([...posts])
       })
       .catch(console.log)
   }
@@ -114,20 +106,15 @@ function Post({ post, posts, setPosts }) {
   const toggleLikePost = () => {
     const url = post.userLikedThisPost ? '/unlikePost' : 'likePost'
 
-    const _post = post
-    _post.likes = post.userLikedThisPost ? post.likes - 1 : post.likes + 1
-    _post.userLikedThisPost = !post.userLikedThisPost
+    post.likes = post.userLikedThisPost ? post.likes - 1 : post.likes + 1
+    post.userLikedThisPost = !post.userLikedThisPost
 
-    _post.dislikes = post.userDislikedThisPost
+    post.dislikes = post.userDislikedThisPost
       ? post.dislikes - 1
       : post.dislikes
-    _post.userDislikedThisPost = post.userDislikedThisPost && false
+    post.userDislikedThisPost = post.userDislikedThisPost && false
 
-    const index = posts.findIndex(post => post._id === _post._id)
-    const _posts = [...posts]
-    _posts[index] = _post
-
-    setPosts(_posts)
+    setPosts([...posts])
 
     fetch(url, {
       method: 'POST',
@@ -139,20 +126,15 @@ function Post({ post, posts, setPosts }) {
   const toggleDislikePost = () => {
     const url = post.userDislikedThisPost ? '/removeDislikePost' : 'dislikePost'
 
-    const _post = post
-    _post.dislikes = post.userDislikedThisPost
+    post.dislikes = post.userDislikedThisPost
       ? post.dislikes - 1
       : post.dislikes + 1
-    _post.userDislikedThisPost = !post.userDislikedThisPost
+    post.userDislikedThisPost = !post.userDislikedThisPost
 
-    _post.likes = post.userLikedThisPost ? post.likes - 1 : post.likes
-    _post.userLikedThisPost = post.userLikedThisPost && false
+    post.likes = post.userLikedThisPost ? post.likes - 1 : post.likes
+    post.userLikedThisPost = post.userLikedThisPost && false
 
-    const index = posts.findIndex(post => post._id === _post._id)
-    const _posts = [...posts]
-    _posts[index] = _post
-
-    setPosts(_posts)
+    setPosts([...posts])
 
     fetch(url, {
       method: 'POST',
@@ -161,20 +143,13 @@ function Post({ post, posts, setPosts }) {
     }).catch(console.log)
   }
 
+  const [showAll, setShowAll] = useState(
+    post.post.length < POST_MAX_VISIBLE_LENGTH
+  )
+  const toggleReadMore = () => setShowAll(!showAll)
+
   return (
     <>
-      {displayPopup && (
-        <Popup
-          message={
-            post.replies.length
-              ? 'Delete your post and all of its replies permanently?'
-              : 'Delete your post permanently?'
-          }
-          deletePost={deletePost}
-          deletePostLoading={deletePostLoading}
-          closePopup={() => setDisplayPopup(false)}
-        />
-      )}
       <div className={style.post}>
         <a href="#">
           <img
@@ -199,6 +174,7 @@ function Post({ post, posts, setPosts }) {
                   userName={post.userName}
                   date={post.date}
                   edited={post.edited}
+                  userAuthoredThisPost={post.userAuthoredThisPost}
                   openDropdown={openDropdown}
                 />
                 {displayDropdown && (
@@ -208,7 +184,31 @@ function Post({ post, posts, setPosts }) {
                     openPopup={() => setDisplayPopup(true)}
                   />
                 )}
-                <div>{post.post}</div>
+                {displayPopup && (
+                  <Popup
+                    message={
+                      post.replies.length
+                        ? 'Delete your post and all of its replies permanently?'
+                        : 'Delete your post permanently?'
+                    }
+                    deletePost={deletePost}
+                    deletePostLoading={deletePostLoading}
+                    closePopup={() => setDisplayPopup(false)}
+                  />
+                )}
+                <div>
+                  {showAll
+                    ? post.post
+                    : post.post.slice(0, POST_MAX_VISIBLE_LENGTH)}
+                </div>
+                {post.post.length > POST_MAX_VISIBLE_LENGTH && (
+                  <button
+                    onClick={toggleReadMore}
+                    className={style.readMoreBtn}
+                  >
+                    {showAll ? 'Show less' : 'Read more'}
+                  </button>
+                )}
                 <Actions
                   toggleLikePost={toggleLikePost}
                   userLikedThisPost={post.userLikedThisPost}

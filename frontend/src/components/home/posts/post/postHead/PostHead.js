@@ -7,7 +7,13 @@ import style from './PostHead.module.css'
 
 JavascriptTimeAgo.addLocale(en)
 
-function PostHead({ userName, date, edited, openDropdown }) {
+function PostHead({
+  userName,
+  date,
+  edited,
+  userAuthoredThisPost,
+  openDropdown,
+}) {
   return (
     <div className={style.postHead}>
       <div>
@@ -16,9 +22,11 @@ function PostHead({ userName, date, edited, openDropdown }) {
           <ReactTimeAgo date={date} /> {edited && '(edited)'}
         </span>
       </div>
-      <button onClick={openDropdown} className={style.kebab}>
-        <VerticalKebab />
-      </button>
+      {userAuthoredThisPost && (
+        <button onClick={openDropdown} className={style.kebab}>
+          <VerticalKebab />
+        </button>
+      )}
     </div>
   )
 }

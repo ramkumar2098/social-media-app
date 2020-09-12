@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { POST_MAX_LENGTH } from 'appConstants'
 import AddPost from './addPost/AddPost'
 import Posts from './posts/Posts'
 import style from './Home.module.css'
@@ -15,7 +16,7 @@ function Home({ setDisplayBurger }) {
   const [loading, setLoading] = useState(false)
 
   const addPost = () => {
-    if (!post) return
+    if (!post || post.length > POST_MAX_LENGTH) return
     setLoading(true)
 
     fetch('/addPost', {
@@ -25,6 +26,8 @@ function Home({ setDisplayBurger }) {
     })
       .then(response => response.json())
       .then(post => {
+        post.userAuthoredThisPost = true
+
         setPost('')
         setLoading(false)
         setPosts([post, ...posts])

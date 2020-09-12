@@ -1,9 +1,10 @@
 .addPost {
   display: block;
+  resize: vertical;
   width: 100%;
-  max-width: 100%;
-  height: 70px;
-  margin-top: 35px;
+  min-height: 70px;
+  max-height: 500px;
+  margin-top: 25px;
 }
 
 .addPost::placeholder {

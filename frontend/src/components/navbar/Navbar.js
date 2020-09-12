@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import { Link } from 'react-router-dom'
 import Burger from './burger/Burger'
 import style from './Navbar.module.css'
@@ -11,20 +11,18 @@ function Navbar({
 }) {
   const navbarRef = useRef()
 
-  useEffect(() => {
-    let prevScrollPos = window.pageYOffset
+  let prevScrollPos = window.pageYOffset
 
-    window.onscroll = function () {
-      if (displayBurgerMenu) return
-      const currentScrollPos = window.pageYOffset
+  window.onscroll = function () {
+    if (displayBurgerMenu) return
+    const currentScrollPos = window.pageYOffset
 
-      prevScrollPos > currentScrollPos
-        ? (navbarRef.current.style.top = '0')
-        : (navbarRef.current.style.top = '-47px')
+    prevScrollPos > currentScrollPos
+      ? (navbarRef.current.style.top = '0')
+      : (navbarRef.current.style.top = '-47px')
 
-      prevScrollPos = currentScrollPos
-    }
-  }, [displayBurgerMenu])
+    prevScrollPos = currentScrollPos
+  }
 
   return (
     <div ref={navbarRef} className={style.navbar}>

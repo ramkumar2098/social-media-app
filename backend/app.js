@@ -153,14 +153,22 @@ app.get('/posts', async (req, res) => {
     const userDislikedTheseReplies = posts.map(post =>
       post.replies.map(reply => reply.dislikedBy.includes(req.session.userID))
     )
+    const userAuthoredThesePosts = posts.map(
+      post => post.userID === req.session.userID
+    )
+    const userAuthoredTheseReplies = posts.map(post =>
+      post.replies.map(reply => reply.userID === req.session.userID)
+    )
 
     posts.forEach((post, i) => {
       post.userLikedThisPost = userLikedThesePosts[i]
       post.userDislikedThisPost = userDislikedThesePosts[i]
+      post.userAuthoredThisPost = userAuthoredThesePosts[i]
 
       post.replies.forEach((reply, _i) => {
         reply.userLikedThisReply = userLikedTheseReplies[i][_i]
         reply.userDislikedThisReply = userDislikedTheseReplies[i][_i]
+        reply.userAuthoredThisReply = userAuthoredTheseReplies[i][_i]
       })
     })
 
@@ -175,6 +183,7 @@ app.post('/addPost', async (req, res) => {
 
   const post = {
     userName: req.session.userName,
+    userID: req.session.userID,
     post: req.body.post,
     date: Date.now(),
     edited: false,
@@ -199,6 +208,7 @@ app.post('/addReply', async (req, res) => {
   const reply = {
     id: mongodb.ObjectId(),
     userName: req.session.userName,
+    userID: req.session.userID,
     reply: req.body.reply,
     date: Date.now(),
     edited: false,
@@ -241,7 +251,7 @@ app.put('/editReply', async (req, res) => {
   const col = db.collection('posts')
 
   try {
-    const result = await col.findOneAndUpdate(
+    col.updateOne(
       {
         _id: mongodb.ObjectId(req.body._id),
         'replies.id': mongodb.ObjectId(req.body.id),
@@ -255,7 +265,7 @@ app.put('/editReply', async (req, res) => {
       { returnOriginal: false }
     )
 
-    res.json(result.value)
+    res.end()
   } catch (err) {
     console.log(err)
   }
@@ -276,7 +286,7 @@ app.delete('/deleteReply', async (req, res) => {
   const col = db.collection('posts')
 
   try {
-    const result = await col.findOneAndUpdate(
+    col.updateOne(
       { _id: mongodb.ObjectId(req.body._id) },
       {
         $pull: {
@@ -286,7 +296,7 @@ app.delete('/deleteReply', async (req, res) => {
       { returnOriginal: false }
     )
 
-    res.json(result.value)
+    res.end()
   } catch (err) {
     console.log(err)
   }
