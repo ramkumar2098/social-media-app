@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link, Redirect } from 'react-router-dom'
-import Overlay from '../overlay/Overlay'
+import Overlay from './overlay/Overlay'
 import style from './BurgerMenu.module.css'
 
 function BurgerMenu({ closeBurgerMenu }) {

@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
-import { POST_MAX_LENGTH, POST_MAX_VISIBLE_LENGTH } from 'appConstants'
+import { POST_MAX_LENGTH } from 'appConstants'
 import profile from 'images/profile.png'
 import EditPost from '../editPost/EditPost'
 import PostHead from '../postHead/PostHead'
 import Dropdown from '../dropdown/Dropdown'
 import Popup from '../popup/Popup'
+import Content from '../content/Content'
 import Actions from '../actions/Actions'
 import AddReply from '../addReply/AddReply'
 import style from '../Post.module.css'
@@ -142,88 +143,72 @@ function Reply({ reply, post, posts, setPosts }) {
     }).catch(console.log)
   }
 
-  const [showAll, setShowAll] = useState(
-    reply.reply.length < POST_MAX_VISIBLE_LENGTH
-  )
-  const toggleReadMore = () => setShowAll(!showAll)
-
   return (
-    <>
-      <div className={style.reply}>
-        <a href="#">
-          <img
-            src={profile}
-            className={style.profilePic}
-            style={{ width: '30px' }}
-            alt="profile picture"
+    <div className={style.reply}>
+      <a href="#">
+        <img
+          src={profile}
+          className={style.profilePic}
+          style={{ width: '30px' }}
+          alt="profile picture"
+        />
+      </a>
+      <div>
+        {displayEditReply ? (
+          <EditPost
+            editedPost={editedReply}
+            changePost={e => setEditedReply(e.target.value)}
+            updatePost={updateReply}
+            closeEditPost={closeEditReply}
+            updatePostLoading={updateReplyLoading}
           />
-        </a>
-        <div>
-          {displayEditReply ? (
-            <EditPost
-              editedPost={editedReply}
-              changePost={e => setEditedReply(e.target.value)}
-              updatePost={updateReply}
-              closeEditPost={closeEditReply}
-              updatePostLoading={updateReplyLoading}
+        ) : (
+          <div className={style.replyContainer}>
+            <PostHead
+              userName={reply.userName}
+              date={reply.date}
+              edited={reply.edited}
+              userAuthoredThisPost={reply.userAuthoredThisReply}
+              openDropdown={openReplyDropdown}
             />
-          ) : (
-            <div className={style.replyContainer}>
-              <PostHead
-                userName={reply.userName}
-                date={reply.date}
-                edited={reply.edited}
-                userAuthoredThisPost={reply.userAuthoredThisReply}
-                openDropdown={openReplyDropdown}
+            {displayReplyDropdown && (
+              <Dropdown
+                closeDropdown={closeReplyDropdown}
+                openEditPost={openEditReply}
+                openPopup={() => setDisplayPopup(true)}
               />
-              {displayReplyDropdown && (
-                <Dropdown
-                  closeDropdown={closeReplyDropdown}
-                  openEditPost={openEditReply}
-                  openPopup={() => setDisplayPopup(true)}
-                />
-              )}
-              {displayPopup && (
-                <Popup
-                  message="Delete your reply permanently?"
-                  deletePost={deleteReply}
-                  deletePostLoading={deleteReplyLoading}
-                  closePopup={() => setDisplayPopup(false)}
-                />
-              )}
-              <div>
-                {showAll
-                  ? reply.reply
-                  : reply.reply.slice(0, POST_MAX_VISIBLE_LENGTH)}
-              </div>
-              {reply.reply.length > POST_MAX_VISIBLE_LENGTH && (
-                <button onClick={toggleReadMore} className={style.readMoreBtn}>
-                  {showAll ? 'Show less' : 'Read more'}
-                </button>
-              )}
-              <Actions
-                toggleLikePost={toggleLikeReply}
-                userLikedThisPost={reply.userLikedThisReply}
-                likes={reply.likes}
-                toggleDislikePost={toggleDislikeReply}
-                userDislikedThisPost={reply.userDislikedThisReply}
-                dislikes={reply.dislikes}
-                openAddReply={openAddReplyToReply}
+            )}
+            {displayPopup && (
+              <Popup
+                message="Delete your reply permanently?"
+                deletePost={deleteReply}
+                deletePostLoading={deleteReplyLoading}
+                closePopup={() => setDisplayPopup(false)}
               />
-              {displayAddReplyToReply && (
-                <AddReply
-                  reply={replyToReply}
-                  changeReply={e => setReplyToReply(e.target.value)}
-                  addReply={addReplyToReply}
-                  closeAddReply={closeAddReplyToReply}
-                  loading={loading}
-                />
-              )}
-            </div>
-          )}
-        </div>
+            )}
+            <Content post={reply.reply} />
+            <Actions
+              toggleLikePost={toggleLikeReply}
+              userLikedThisPost={reply.userLikedThisReply}
+              likes={reply.likes}
+              toggleDislikePost={toggleDislikeReply}
+              userDislikedThisPost={reply.userDislikedThisReply}
+              dislikes={reply.dislikes}
+              openAddReply={openAddReplyToReply}
+            />
+            {displayAddReplyToReply && (
+              <AddReply
+                reply={replyToReply}
+                changeReply={e => setReplyToReply(e.target.value)}
+                addReply={addReplyToReply}
+                closeAddReply={closeAddReplyToReply}
+                loading={loading}
+              />
+            )}
+          </div>
+        )}
       </div>
-    </>
+    </div>
   )
 }
 

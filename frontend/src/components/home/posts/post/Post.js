@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
-import { POST_MAX_LENGTH, POST_MAX_VISIBLE_LENGTH } from 'appConstants'
+import { POST_MAX_LENGTH } from 'appConstants'
 import profile from 'images/profile.png'
 import EditPost from './editPost/EditPost'
 import PostHead from './postHead/PostHead'
 import Dropdown from './dropdown/Dropdown'
 import Popup from './popup/Popup'
+import Content from './content/Content'
 import Actions from './actions/Actions'
 import AddReply from './addReply/AddReply'
-import { ReactComponent as OpenDropdownCaret } from 'SVGs/OpenDropdownCaret.svg'
-import { ReactComponent as CloseDropdownCaret } from 'SVGs/CloseDropdownCaret.svg'
+import ShowReply from './showReply/ShowReply'
 import Reply from './reply/Reply'
 import style from './Post.module.css'
 
@@ -143,120 +143,88 @@ function Post({ post, posts, setPosts }) {
     }).catch(console.log)
   }
 
-  const [showAll, setShowAll] = useState(
-    post.post.length < POST_MAX_VISIBLE_LENGTH
-  )
-  const toggleReadMore = () => setShowAll(!showAll)
-
   return (
-    <>
-      <div className={style.post}>
-        <a href="#">
-          <img
-            src={profile}
-            className={style.profilePic}
-            alt="profile picture"
+    <div className={style.post}>
+      <a href="#">
+        <img src={profile} className={style.profilePic} alt="profile picture" />
+      </a>
+      <div>
+        {displayEditPost ? (
+          <EditPost
+            editedPost={editedPost}
+            changePost={e => setEditedPost(e.target.value)}
+            updatePost={updatePost}
+            closeEditPost={closeEditPost}
+            updatePostLoading={updatePostLoading}
           />
-        </a>
-        <div>
-          {displayEditPost ? (
-            <EditPost
-              editedPost={editedPost}
-              changePost={e => setEditedPost(e.target.value)}
-              updatePost={updatePost}
-              closeEditPost={closeEditPost}
-              updatePostLoading={updatePostLoading}
+        ) : (
+          <div className={style.postContainer}>
+            <PostHead
+              userName={post.userName}
+              date={post.date}
+              edited={post.edited}
+              userAuthoredThisPost={post.userAuthoredThisPost}
+              openDropdown={openDropdown}
             />
-          ) : (
-            <>
-              <div className={style.postContainer}>
-                <PostHead
-                  userName={post.userName}
-                  date={post.date}
-                  edited={post.edited}
-                  userAuthoredThisPost={post.userAuthoredThisPost}
-                  openDropdown={openDropdown}
-                />
-                {displayDropdown && (
-                  <Dropdown
-                    closeDropdown={closeDropdown}
-                    openEditPost={openEditPost}
-                    openPopup={() => setDisplayPopup(true)}
-                  />
-                )}
-                {displayPopup && (
-                  <Popup
-                    message={
-                      post.replies.length
-                        ? 'Delete your post and all of its replies permanently?'
-                        : 'Delete your post permanently?'
-                    }
-                    deletePost={deletePost}
-                    deletePostLoading={deletePostLoading}
-                    closePopup={() => setDisplayPopup(false)}
-                  />
-                )}
-                <div>
-                  {showAll
-                    ? post.post
-                    : post.post.slice(0, POST_MAX_VISIBLE_LENGTH)}
-                </div>
-                {post.post.length > POST_MAX_VISIBLE_LENGTH && (
-                  <button
-                    onClick={toggleReadMore}
-                    className={style.readMoreBtn}
-                  >
-                    {showAll ? 'Show less' : 'Read more'}
-                  </button>
-                )}
-                <Actions
-                  toggleLikePost={toggleLikePost}
-                  userLikedThisPost={post.userLikedThisPost}
-                  likes={post.likes}
-                  toggleDislikePost={toggleDislikePost}
-                  userDislikedThisPost={post.userDislikedThisPost}
-                  dislikes={post.dislikes}
-                  openAddReply={openAddReply}
-                />
-              </div>
-              {displayAddReply && (
-                <AddReply
-                  reply={reply}
-                  changeReply={e => setReply(e.target.value)}
-                  addReply={addReply}
-                  closeAddReply={closeAddReply}
-                  loading={loading}
-                />
-              )}
-            </>
-          )}
-          {post.replies.length > 0 && (
-            <button
-              onClick={() => setDisplayReplies(!displayReplies)}
-              className={style.showRepliesBtn}
-            >
-              {displayReplies ? <CloseDropdownCaret /> : <OpenDropdownCaret />}
-              <span>
-                {displayReplies ? 'Hide' : 'Show'}
-                {post.replies.length > 1
-                  ? ` ${post.replies.length} replies`
-                  : ' reply'}
-              </span>
-            </button>
-          )}
-          {displayReplies &&
-            post.replies.map(reply => (
-              <Reply
-                key={reply.id}
-                reply={reply}
-                post={post}
-                posts={posts}
-                setPosts={setPosts}
+            {displayDropdown && (
+              <Dropdown
+                closeDropdown={closeDropdown}
+                openEditPost={openEditPost}
+                openPopup={() => setDisplayPopup(true)}
               />
-            ))}
-        </div>
+            )}
+            {displayPopup && (
+              <Popup
+                message={
+                  post.replies.length
+                    ? 'Delete your post and all of its replies permanently?'
+                    : 'Delete your post permanently?'
+                }
+                deletePost={deletePost}
+                deletePostLoading={deletePostLoading}
+                closePopup={() => setDisplayPopup(false)}
+              />
+            )}
+            <Content post={post.post} />
+            <Actions
+              toggleLikePost={toggleLikePost}
+              userLikedThisPost={post.userLikedThisPost}
+              likes={post.likes}
+              toggleDislikePost={toggleDislikePost}
+              userDislikedThisPost={post.userDislikedThisPost}
+              dislikes={post.dislikes}
+              openAddReply={openAddReply}
+            />
+            {displayAddReply && (
+              <AddReply
+                reply={reply}
+                changeReply={e => setReply(e.target.value)}
+                addReply={addReply}
+                closeAddReply={closeAddReply}
+                loading={loading}
+              />
+            )}
+          </div>
+        )}
+        {post.replies.length > 0 && (
+          <ShowReply
+            toggleDisplayReplies={() => setDisplayReplies(!displayReplies)}
+            displayReplies={displayReplies}
+            repliesCount={post.replies.length}
+          />
+        )}
+        {displayReplies &&
+          post.replies.map(reply => (
+            <Reply
+              key={reply.id}
+              reply={reply}
+              post={post}
+              posts={posts}
+              setPosts={setPosts}
+            />
+          ))}
       </div>
-    </>
+    </div>
   )
 }
 
