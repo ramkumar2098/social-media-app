@@ -13,6 +13,7 @@ import Header from './components/header/Header'
 import Signup from './components/signUp/Signup'
 import Login from './components/login/Login'
 import Home from './components/home/Home'
+import Profile from 'components/profile/Profile'
 
 function App() {
   const [displayBurger, setDisplayBurger] = useState(false)
@@ -50,6 +51,9 @@ function App() {
         </CheckAuth>
         <PrivateRoute path="/home">
           <Home setDisplayBurger={setDisplayBurger} />
+        </PrivateRoute>
+        <PrivateRoute path="/profile">
+          <Profile setDisplayBurger={setDisplayBurger} />
         </PrivateRoute>
       </Switch>
     </Router>

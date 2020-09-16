@@ -19,21 +19,28 @@
   position: absolute;
   top: 15px;
   right: 14px;
-  font-weight: bold;
   margin-right: 5px;
 }
 
 .navItems > a {
   text-decoration: none;
   color: #fff;
-}
-
-.navItems > a:first-child {
+  font-weight: bold;
   margin-right: 20px;
 }
 
-.navItems > a:hover {
+.navItems > :hover {
   opacity: 0.6;
+}
+
+.navItems > button {
+  background-color: #1877f2;
+  color: #fff;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
 }
 
 @media (min-width: 900px) {

@@ -29,7 +29,7 @@ function BurgerMenu({ closeBurgerMenu }) {
     <>
       <Overlay />
       <div className={style.burgerMenu}>
-        <Link to="#">Profile</Link>
+        <Link to="/profile">Profile</Link>
         <button onClick={logOut}>Log out</button>
         {redirect && <Redirect to="/login" />}
       </div>

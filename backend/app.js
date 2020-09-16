@@ -49,8 +49,8 @@ app.post('/signup', async (req, res) => {
   const { firstName, lastName, email, password, confirmPassword } = req.body
 
   const [_firstName, _lastName, _email, _password, _confirmPassword] = [
-    capitalize(firstName).trim(),
-    capitalize(lastName).trim(),
+    capitalize(firstName.trim()),
+    capitalize(lastName.trim()),
     email.trim(),
     password.trim(),
     confirmPassword.trim(),
@@ -88,6 +88,7 @@ app.post('/signup', async (req, res) => {
       lastName: _lastName,
       email: _email,
       password: hashedPassword,
+      joined: Date.now(),
     }
 
     await col.insertOne(document)
@@ -484,6 +485,60 @@ app.post('/removeDislikeReply', async (req, res) => {
   }
 })
 
+app.get('/profile', async (req, res) => {
+  const col = db.collection('users')
+
+  try {
+    const user = await col
+      .aggregate([
+        { $match: { _id: mongodb.ObjectId(req.session.userID) } },
+        { $project: { password: 0 } },
+      ])
+      .toArray()
+
+    res.json(user[0])
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+app.put('/editFirstName', async (req, res) => {
+  const editedFirstName = capitalize(req.body.editedFirstName.trim())
+  const firstNameError = validateFirstName(editedFirstName)
+
+  if (firstNameError) {
+    return res.json({ firstNameError })
+  }
+
+  const col = db.collection('users')
+
+  try {
+    const { value } = await col.findOneAndUpdate(
+      { _id: mongodb.ObjectID(req.body._id) },
+      { $set: { firstName: editedFirstName } },
+      { returnOriginal: false }
+    )
+
+    const userName = value.firstName + ' ' + value.lastName
+
+    db.collection('posts').updateMany(
+      { userID: req.session.userID },
+      { $set: { userName } }
+    )
+
+    db.collection('posts').updateMany(
+      {},
+      { $set: { 'replies.$[element].userName': userName } },
+      { arrayFilters: [{ 'element.userID': req.session.userID }] }
+    )
+
+    req.session.userName = userName
+    res.json({ firstName: value.firstName })
+  } catch (err) {
+    console.log(err)
+  }
+})
+
 app.post('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
@@ -495,3 +550,98 @@ app.post('/logout', (req, res) => {
 })
 
 app.listen(3001)
+
+/* db.posts.insertMany([
+  {
+    _id: '5f5c78c2d40d389b27ab5a55',
+    userName: 'catman',
+    userID: '5f4f80d2c9625d577565492f',
+    post: 'key press',
+    date: 1599126701660,
+    edited: false,
+    likedBy: [
+      '5f4f80d2c9625d577565492a',
+      '5f4f80d2c9625d577565492b',
+      '5f4f80d2c9625d577565492c',
+    ],
+    likes: 3,
+    dislikedBy: ['5f4f80d2c9625d577565492f', '5f4f80d2c9625d577565492e'],
+    dislikes: 2,
+    replies: [
+      {
+        id: '5f5c78c2d40d389b27ab5a52',
+        userName: 'class',
+        userID: '5f4f80d2c9625d577565492f',
+        reply: 'yolo',
+        date: 1599156793695,
+        edited: true,
+        likedBy: ['5f4f80d2c9625d577565492f'],
+        likes: 1,
+        dislikedBy: [],
+        dislikes: 0,
+        userLikedThisReply: true,
+        userDislikedThisReply: false,
+      },
+      {
+        id: '5f5c78c2d40d389b27ab5a53',
+        userName: 'press',
+        userID: '5f4f80d2c9625d577565492e',
+        reply: 'summer',
+        date: 1599126534281,
+        edited: false,
+        likedBy: [],
+        likes: 0,
+        dislikedBy: [],
+        dislikes: 0,
+        userLikedThisReply: false,
+        userDislikedThisReply: false,
+      },
+    ],
+    userLikedThisPost: false,
+    userDislikedThisPost: true,
+  },
+  {
+    _id: '5f5c78c2d40d389b27ab5a54',
+    userName: 'asdf',
+    userID: '5f4f80d2c9625d577565492e',
+    post: 'lorem ipsum',
+    date: 1599126701760,
+    edited: true,
+    likedBy: ['5f4f80d2c9625d577565492f', '5f4f80d2c9625d577565492e'],
+    likes: 2,
+    dislikedBy: ['5f4f80d2c9625d577565492g', '5f4f80d2c9625d577565492h'],
+    dislikes: 2,
+    replies: [
+      {
+        id: '5f5c78c2d40d389b27ab5a50',
+        userName: 'zxcv',
+        userID: '5f4f80d2c9625d577565492e',
+        reply: 'ninja ipsum',
+        date: 1599126793695,
+        edited: false,
+        likedBy: [],
+        likes: 0,
+        dislikedBy: ['5f4f80d2c9625d577565492f'],
+        dislikes: 1,
+        userLikedThisReply: false,
+        userDislikedThisReply: true,
+      },
+      {
+        id: '5f5c78c2d40d389b27ab5a51',
+        userName: 'qwer',
+        userID: '5f4f80d2c9625d577565492f',
+        reply: 'super ipsum',
+        date: 1599126834281,
+        edited: false,
+        likedBy: ['5f4f80d2c9625d577565492f'],
+        likes: 1,
+        dislikedBy: [],
+        dislikes: 0,
+        userLikedThisReply: true,
+        userDislikedThisReply: false,
+      },
+    ],
+    userLikedThisPost: true,
+    userDislikedThisPost: false,
+  },
+]) */

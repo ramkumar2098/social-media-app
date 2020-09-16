@@ -1,5 +1,5 @@
-import React, { useRef } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useRef, useState } from 'react'
+import { Link, Redirect } from 'react-router-dom'
 import Burger from './burger/Burger'
 import style from './Navbar.module.css'
 
@@ -24,6 +24,13 @@ function Navbar({
     prevScrollPos = currentScrollPos
   }
 
+  const [redirect, setRedirect] = useState(false)
+
+  const logOut = () => {
+    fetch('/logout', { method: 'POST' }).catch(console.log)
+    setRedirect(true)
+  }
+
   return (
     <div ref={navbarRef} className={style.navbar}>
       <Link to="/home" className={style.logo}>
@@ -34,8 +41,9 @@ function Navbar({
       )}
       {displayBurger && displayNavItems && (
         <div className={style.navItems}>
-          <a href="#">Profile</a>
-          <a href="#">Log out</a>
+          <Link to="/profile">Profile</Link>
+          <button onClick={logOut}>Log out</button>
+          {redirect && <Redirect to="/login" />}
         </div>
       )}
     </div>

@@ -1,0 +1,45 @@
+.profile {
+  width: 90%;
+  margin: auto;
+}
+
+.profilePic {
+  display: block;
+  width: 130px;
+  border-radius: 50%;
+  margin: auto;
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+
+.details > div {
+  margin-bottom: 10px;
+}
+
+.details svg {
+  width: 16px;
+  height: 16px;
+}
+
+.firstName {
+  margin-bottom: 16px;
+}
+
+.buttons {
+  margin: 0;
+  position: relative;
+  top: -2px;
+}
+
+.editBtn {
+  background-color: #fff;
+  border: 0;
+  outline: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.details > div:hover > .editBtn,
+.editBtn:focus {
+  opacity: 1;
+}
