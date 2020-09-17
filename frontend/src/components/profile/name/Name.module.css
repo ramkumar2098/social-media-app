@@ -1,0 +1,18 @@
+.editBtn {
+  background-color: #fff;
+  padding: 0;
+  border: 0;
+  margin-left: 7px;
+  outline: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.editBtn:focus {
+  opacity: 1;
+}
+
+.editBtn svg {
+  width: 16px;
+  height: 16px;
+}

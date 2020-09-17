@@ -1,0 +1,14 @@
+.name {
+  margin-bottom: 16px;
+}
+
+.nameError {
+  color: red;
+  margin-top: -16px;
+}
+
+.buttons {
+  margin: 0;
+  position: relative;
+  top: -2px;
+}
