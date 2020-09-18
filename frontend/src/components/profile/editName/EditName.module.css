@@ -1,14 +1,12 @@
 .name {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .nameError {
   color: red;
-  margin-top: -16px;
+  margin-top: -7px;
 }
 
 .buttons {
   margin: 0;
-  position: relative;
-  top: -2px;
 }

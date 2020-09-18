@@ -610,6 +610,39 @@ app.put('/changePassword', async (req, res) => {
   }
 })
 
+app.delete('/deleteAccount', async (req, res) => {
+  const col = db.collection('users')
+
+  try {
+    const { password } = await col.findOne(
+      { _id: mongodb.ObjectID(req.session.userID) },
+      { projection: { _id: 0, password: 1 } }
+    )
+
+    const passwordMatches = await bcrypt.compare(req.body.password, password)
+
+    if (!passwordMatches)
+      return res.json({ deleteAccountError: 'Wrong password' })
+
+    db.collection('posts').updateMany(
+      { userID: req.session.userID },
+      { $set: { userName: 'Deleted user' } }
+    )
+
+    db.collection('posts').updateMany(
+      {},
+      { $set: { 'replies.$[element].userName': 'Deleted user' } },
+      { arrayFilters: [{ 'element.userID': req.session.userID }] }
+    )
+
+    col.deleteOne({ _id: mongodb.ObjectID(req.session.userID) })
+
+    res.json({})
+  } catch (err) {
+    console.log(err)
+  }
+})
+
 app.post('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {

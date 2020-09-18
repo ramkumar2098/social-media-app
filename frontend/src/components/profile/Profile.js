@@ -3,10 +3,9 @@ import profilePic from 'images/profile2.png'
 import EditName from './editName/EditName'
 import Name from './name/Name'
 import { month, date, year } from 'utils'
-import Spinner from 'components/spinner/Spinner'
-import { Redirect } from 'react-router-dom'
+import ChangePassword from './changePassword/ChangePassword'
+import DeleteAccount from './deleteAccount/DeleteAccount'
 import style from './Profile.module.css'
-import { buttons } from '../home/Buttons.module.css'
 
 function Profile({ setDisplayBurger }) {
   useEffect(() => {
@@ -20,11 +19,7 @@ function Profile({ setDisplayBurger }) {
   useEffect(() => {
     fetch('/profile')
       .then(response => response.json())
-      .then(profile => {
-        setProfile(profile)
-        setEditedFirstName(profile.firstName)
-        setEditedLastName(profile.lastName)
-      })
+      .then(setProfile)
       .catch(console.log)
   }, [])
 
@@ -86,52 +81,6 @@ function Profile({ setDisplayBurger }) {
       .catch(console.log)
   }
 
-  const [displayChangePassword, setDisplayChangePassword] = useState(false)
-
-  const [currentPassword, setCurrentPassword] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-
-  const [currentPasswordError, setCurrentPasswordError] = useState('')
-  const [newPasswordError, setNewPasswordError] = useState('')
-
-  const changePassword = () => {
-    if (!currentPassword || !newPassword) return
-
-    if (newPassword.length < 8) {
-      return setNewPasswordError('Password too weak')
-    }
-    setChangePasswordLoading(true)
-
-    fetch('/changePassword', {
-      method: 'PUT',
-      headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify({ currentPassword, newPassword }),
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.currentPasswordError) {
-          setNewPasswordError('')
-          setChangePasswordLoading(false)
-          return setCurrentPasswordError(data.currentPasswordError)
-        }
-        if (data.newPasswordError) {
-          setCurrentPasswordError('')
-          setChangePasswordLoading(false)
-          return setNewPasswordError(data.newPasswordError)
-        }
-        logOut()
-      })
-      .catch(console.log())
-  }
-
-  const [changePasswordLoading, setChangePasswordLoading] = useState(false)
-  const [redirect, setRedirect] = useState(false)
-
-  const logOut = () => {
-    fetch('/logout', { method: 'POST' }).catch(console.log)
-    setRedirect(true)
-  }
-
   return (
     <div className={style.profile}>
       <img
@@ -139,7 +88,6 @@ function Profile({ setDisplayBurger }) {
         className={style.profilePic}
         alt="profile picture"
       />
-      <button>Change picture</button>
       <div className={style.details}>
         <div>
           <span>First name: </span>
@@ -202,65 +150,8 @@ function Profile({ setDisplayBurger }) {
               )}`}
           </span>
         </div>
-        {displayChangePassword ? (
-          <>
-            <input
-              type="password"
-              value={currentPassword}
-              onChange={e => setCurrentPassword(e.target.value)}
-              placeholder="Current Password"
-              className={style.password}
-              autoFocus
-            />
-            {currentPasswordError && (
-              <div className={style.error}>{currentPasswordError}</div>
-            )}
-            <input
-              type="password"
-              value={newPassword}
-              onChange={e => setNewPassword(e.target.value)}
-              placeholder="New Password"
-              className={style.password}
-            />
-            <div className={buttons} style={{ marginTop: 0 }}>
-              <button
-                onClick={changePassword}
-                disabled={changePasswordLoading}
-                style={{
-                  opacity: changePasswordLoading
-                    ? 0.8
-                    : currentPassword && newPassword
-                    ? 1
-                    : 0.8,
-                }}
-              >
-                {changePasswordLoading && <Spinner />}Save
-              </button>
-              {redirect && <Redirect to="/login" />}
-              <button
-                onClick={() => {
-                  setCurrentPassword('')
-                  setNewPassword('')
-                  setCurrentPasswordError('')
-                  setNewPasswordError('')
-                  setDisplayChangePassword(false)
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-            {newPasswordError && (
-              <div className={style.error}>{newPasswordError}</div>
-            )}
-          </>
-        ) : (
-          <button
-            onClick={() => setDisplayChangePassword(true)}
-            className={style.changePassword}
-          >
-            Change password
-          </button>
-        )}
+        <ChangePassword />
+        <DeleteAccount />
       </div>
     </div>
   )

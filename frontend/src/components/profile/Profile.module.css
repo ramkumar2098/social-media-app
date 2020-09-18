@@ -24,22 +24,7 @@
   font-weight: 600;
 }
 
-.password {
-  display: block;
-  margin-bottom: 10px;
-}
-
-.password::placeholder {
-  font-size: 14px;
-}
-
-.error {
-  color: red;
-  margin-top: -7px;
-  margin-bottom: 0;
-}
-
-.changePassword {
+.button {
   display: block;
   background: #fff;
   color: #1877f2;
@@ -50,6 +35,6 @@
   cursor: pointer;
 }
 
-.changePassword:hover {
+.button:hover {
   text-decoration: underline;
 }
