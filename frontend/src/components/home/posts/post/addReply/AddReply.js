@@ -1,5 +1,5 @@
 import React from 'react'
-import profile from 'images/profile.png'
+import profilePic from 'images/profile.png'
 import { POST_MAX_LENGTH } from 'appConstants'
 import Spinner from 'components/spinner/Spinner'
 import style from './AddReply.module.css'
@@ -10,7 +10,7 @@ function AddReply({ reply, changeReply, addReply, closeAddReply, loading }) {
     <>
       <div className={style.addReply}>
         <span>
-          <img src={profile} alt="profile picture" />
+          <img src={profilePic} alt="profile picture" />
         </span>
         <textarea
           value={reply}

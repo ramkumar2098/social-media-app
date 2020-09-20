@@ -26,7 +26,7 @@ const col = db.collection('users')
 const SESS_NAME = 'sid'
 const FIVE_MINUTES = 1000 * 60 * 5
 
-app.use(express.json())
+app.use(express.json({ limit: '250kb' }))
 app.use(
   session({
     name: SESS_NAME,
@@ -89,6 +89,7 @@ app.post('/signup', async (req, res) => {
       email: _email,
       password: hashedPassword,
       joined: Date.now(),
+      avatar: '',
     }
 
     await col.insertOne(document)
@@ -182,9 +183,17 @@ app.get('/posts', async (req, res) => {
 app.post('/addPost', async (req, res) => {
   const col = db.collection('posts')
 
+  const { avatar } = await db
+    .collection('users')
+    .findOne(
+      { _id: mongodb.ObjectID(req.session.userID) },
+      { projection: { _id: 0, avatar: 1 } }
+    )
+
   const post = {
     userName: req.session.userName,
     userID: req.session.userID,
+    avatar,
     post: req.body.post,
     date: Date.now(),
     edited: false,
@@ -206,10 +215,18 @@ app.post('/addPost', async (req, res) => {
 app.post('/addReply', async (req, res) => {
   const col = db.collection('posts')
 
+  const { avatar } = await db
+    .collection('users')
+    .findOne(
+      { _id: mongodb.ObjectID(req.session.userID) },
+      { projection: { _id: 0, avatar: 1 } }
+    )
+
   const reply = {
     id: mongodb.ObjectId(),
     userName: req.session.userName,
     userID: req.session.userID,
+    avatar,
     reply: req.body.reply,
     date: Date.now(),
     edited: false,
@@ -494,7 +511,7 @@ app.get('/profile', async (req, res) => {
       { projection: { password: 0 } }
     )
 
-    res.json(user)
+    res.send(user)
   } catch (err) {
     console.log(err)
   }
@@ -638,6 +655,36 @@ app.delete('/deleteAccount', async (req, res) => {
     col.deleteOne({ _id: mongodb.ObjectID(req.session.userID) })
 
     res.json({})
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+app.post('/uploadAvatar', async (req, res) => {
+  const dataUrl = req.body.dataUrl.split(',')[1]
+
+  const binData = new Buffer(dataUrl, 'base64')
+
+  const col = db.collection('users')
+
+  try {
+    col.updateOne(
+      { _id: mongodb.ObjectId(req.session.userID) },
+      { $set: { avatar: binData } }
+    )
+
+    db.collection('posts').updateMany(
+      { userID: req.session.userID },
+      { $set: { avatar: binData } }
+    )
+
+    db.collection('posts').updateMany(
+      {},
+      { $set: { 'replies.$[element].avatar': binData } },
+      { arrayFilters: [{ 'element.userID': req.session.userID }] }
+    )
+
+    res.end()
   } catch (err) {
     console.log(err)
   }

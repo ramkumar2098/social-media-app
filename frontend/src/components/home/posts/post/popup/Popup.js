@@ -30,6 +30,7 @@ function Popup({ message, deletePost, deletePostLoading, closePopup }) {
             onClick={deletePost}
             disabled={deletePostLoading}
             style={{ opacity: deletePostLoading ? 0.8 : 1 }}
+            autoFocus
           >
             {deletePostLoading && <Spinner />}Delete
           </button>

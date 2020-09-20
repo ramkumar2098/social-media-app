@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { POST_MAX_LENGTH } from 'appConstants'
-import profile from 'images/profile.png'
+import profilePic from 'images/profile.png'
 import EditPost from '../editPost/EditPost'
 import PostHead from '../postHead/PostHead'
 import Dropdown from '../dropdown/Dropdown'
@@ -147,9 +147,11 @@ function Reply({ reply, post, posts, setPosts }) {
     <div className={style.reply}>
       <a href="#">
         <img
-          src={profile}
+          src={
+            reply.avatar ? 'data:image/jpeg;base64,' + reply.avatar : profilePic
+          }
           className={style.profilePic}
-          style={{ width: '30px' }}
+          style={{ width: '30px', height: '30px' }}
           alt="profile picture"
         />
       </a>

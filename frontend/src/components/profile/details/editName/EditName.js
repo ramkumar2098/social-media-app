@@ -1,7 +1,7 @@
 import React from 'react'
 import Spinner from 'components/spinner/Spinner'
-import style from './EditName.module.css'
-import { buttons } from '../../home/Buttons.module.css'
+import Error from '../../error/Error'
+import { buttons } from '../../../home/Buttons.module.css'
 
 function EditName({
   editedName,
@@ -16,10 +16,10 @@ function EditName({
       <input
         value={editedName}
         onChange={changeEditedName}
-        className={style.name}
+        style={{ marginBottom: '10px' }}
         autoFocus
       />
-      <div className={buttons + ' ' + style.buttons}>
+      <div className={buttons} style={{ margin: 0 }}>
         <button
           onClick={updateName}
           disabled={loading}
@@ -29,7 +29,7 @@ function EditName({
         </button>
         <button onClick={closeEditName}>Cancel</button>
       </div>
-      {NameError && <div className={style.nameError}>{NameError}</div>}
+      {NameError && <Error error={NameError} />}
     </>
   )
 }

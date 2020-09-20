@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import Spinner from 'components/spinner/Spinner'
 import { Redirect } from 'react-router-dom'
-import style from './ChangePassword.module.css'
+import Error from '../error/Error'
 import { buttons } from '../../home/Buttons.module.css'
-import { button } from '../Profile.module.css'
+import { button, password } from '../Profile.module.css'
 
 function ChangePassword() {
   const [displayChangePassword, setDisplayChangePassword] = useState(false)
@@ -61,7 +61,7 @@ function ChangePassword() {
   }
 
   return (
-    <div>
+    <div style={{ marginBottom: '10px' }}>
       {displayChangePassword ? (
         <>
           <input
@@ -69,19 +69,17 @@ function ChangePassword() {
             value={currentPassword}
             onChange={e => setCurrentPassword(e.target.value)}
             placeholder="Current Password"
-            className={style.password}
+            className={password}
             style={{ display: 'block' }}
             autoFocus
           />
-          {currentPasswordError && (
-            <div className={style.error}>{currentPasswordError}</div>
-          )}
+          {currentPasswordError && <Error error={currentPasswordError} />}
           <input
             type="password"
             value={newPassword}
             onChange={e => setNewPassword(e.target.value)}
             placeholder="New Password"
-            className={style.password}
+            className={password}
           />
           <div className={buttons} style={{ margin: 0 }}>
             <button
@@ -100,9 +98,7 @@ function ChangePassword() {
             {redirect && <Redirect to="/login" />}
             <button onClick={closeChangePassword}>Cancel</button>
           </div>
-          {newPasswordError && (
-            <div className={style.error}>{newPasswordError}</div>
-          )}
+          {newPasswordError && <Error error={newPasswordError} />}
         </>
       ) : (
         <button

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import Popup from 'components/home/posts/post/popup/Popup'
 import { Redirect } from 'react-router-dom'
-import style from './DeleteAccount.module.css'
+import Error from '../error/Error'
 import { buttons } from '../../home/Buttons.module.css'
-import { button } from '../Profile.module.css'
+import { button, password as _password } from '../Profile.module.css'
 
 function DeleteAccount() {
   const [displayDeleteAccount, setDisplayDeleteAccount] = useState(false)
@@ -58,7 +58,7 @@ function DeleteAccount() {
         value={password}
         onChange={e => setPassword(e.target.value)}
         placeholder="Password"
-        className={style.password}
+        className={_password}
         autoFocus
       />
       <div className={buttons} style={{ marginTop: 0 }}>
@@ -79,9 +79,7 @@ function DeleteAccount() {
         {redirect && <Redirect to="/login" />}
         <button onClick={closeDeleteAccount}>Cancel</button>
       </div>
-      {deleteAccountError && (
-        <div className={style.error}>{deleteAccountError}</div>
-      )}
+      {deleteAccountError && <Error error={deleteAccountError} />}
     </>
   ) : (
     <button

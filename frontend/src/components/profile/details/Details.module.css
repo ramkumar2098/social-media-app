@@ -1,0 +1,11 @@
+.details > div {
+  margin-bottom: 10px;
+}
+
+.details > div:hover > button {
+  opacity: 1;
+}
+
+.details > div > span:first-child {
+  font-weight: 600;
+}

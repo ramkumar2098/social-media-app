@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { POST_MAX_LENGTH } from 'appConstants'
-import profile from 'images/profile.png'
+import profilePic from 'images/profile.png'
 import EditPost from './editPost/EditPost'
 import PostHead from './postHead/PostHead'
 import Dropdown from './dropdown/Dropdown'
@@ -146,7 +146,13 @@ function Post({ post, posts, setPosts }) {
   return (
     <div className={style.post}>
       <a href="#">
-        <img src={profile} className={style.profilePic} alt="profile picture" />
+        <img
+          src={
+            post.avatar ? 'data:image/jpeg;base64,' + post.avatar : profilePic
+          }
+          className={style.profilePic}
+          alt="profile picture"
+        />
       </a>
       <div>
         {displayEditPost ? (
