@@ -1,16 +1,30 @@
 .profilePic {
-  width: 120px;
+  width: 130px;
   border-radius: 50%;
   margin: 20px auto 10px;
   position: relative;
   overflow: hidden;
 }
 
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spinner > div {
+  width: 20px;
+  height: 20px;
+  border-width: 3px;
+  margin-right: 0;
+}
+
 .avatar {
   display: block;
   object-fit: cover;
   width: 100%;
-  height: 120px;
+  height: 130px;
   cursor: pointer;
 }
 
@@ -31,4 +45,18 @@
   background-size: 20px 20px;
   height: 100%;
   opacity: 0.8;
+}
+
+.camera:hover {
+  opacity: 1;
+}
+
+@media (min-width: 700px) {
+  .profilePic {
+    width: 150px;
+  }
+
+  .avatar {
+    height: 150px;
+  }
 }

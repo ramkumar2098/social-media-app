@@ -61,7 +61,7 @@ function ChangePassword() {
   }
 
   return (
-    <div style={{ marginBottom: '10px' }}>
+    <div style={{ marginBottom: '12px' }}>
       {displayChangePassword ? (
         <>
           <input
