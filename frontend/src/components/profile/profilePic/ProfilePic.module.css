@@ -6,6 +6,14 @@
   overflow: hidden;
 }
 
+.avatar {
+  display: block;
+  object-fit: cover;
+  width: 100%;
+  height: 130px;
+  cursor: pointer;
+}
+
 .spinner {
   position: absolute;
   top: 50%;
@@ -20,35 +28,26 @@
   margin-right: 0;
 }
 
-.avatar {
-  display: block;
-  object-fit: cover;
-  width: 100%;
-  height: 130px;
-  cursor: pointer;
-}
-
-.background {
-  background-color: rgba(32, 33, 36, 0.6);
-  height: 28px;
+.removeAvatarBtn {
+  background-color: transparent;
+  padding: 0;
+  border: 0;
   position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  right: 10px;
+  bottom: 35px;
   cursor: pointer;
+  opacity: 0;
 }
 
-.camera {
-  background-image: url(../../../images/camera.png);
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 20px 20px;
-  height: 100%;
-  opacity: 0.8;
-}
-
-.camera:hover {
+.avatar:hover + .removeAvatarBtn,
+.removeAvatarBtn:hover,
+.removeAvatarBtn:focus {
   opacity: 1;
+}
+
+.removeAvatarBtn > svg {
+  fill: #f00;
+  transform: scale(1.1);
 }
 
 @media (min-width: 700px) {
@@ -58,5 +57,9 @@
 
   .avatar {
     height: 150px;
+  }
+
+  .removeAvatarBtn {
+    bottom: 40px;
   }
 }

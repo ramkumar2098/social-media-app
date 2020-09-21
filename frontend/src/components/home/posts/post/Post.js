@@ -148,7 +148,7 @@ function Post({ post, posts, setPosts }) {
       <a href="#">
         <img
           src={
-            post.avatar ? 'data:image/jpeg;base64,' + post.avatar : profilePic
+            post.avatar ? `data:image/jpeg;base64,${post.avatar}` : profilePic
           }
           className={style.profilePic}
           alt="profile picture"

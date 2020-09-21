@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
-import profilePic from 'images/profile2.png'
-import Spinner from 'components/spinner/Spinner'
+import profilePic from 'images/profile2.jpg'
 import EnlargedPic from './enlargedPic/EnlargedPic'
+import Spinner from 'components/spinner/Spinner'
+import { ReactComponent as Delete } from 'SVGs/Delete.svg'
+import Popup from 'components/home/posts/post/popup/Popup'
+import UploadAvatar from './uploadAvatar/UploadAvatar'
 import style from './ProfilePic.module.css'
 
 function ProfilePic({ avatar: _avatar }) {
@@ -39,35 +42,59 @@ function ProfilePic({ avatar: _avatar }) {
       .catch(console.log)
   }
 
+  const removeAvatar = () => {
+    setLoading(true)
+
+    fetch('/removeAvatar', { method: 'DELETE' })
+      .then(() => {
+        setLoading(false)
+        setAvatar(profilePic)
+        setDisplayPopup(false)
+      })
+      .catch(console.log)
+  }
+
+  const [displayPopup, setDisplayPopup] = useState(false)
+
   return (
     <div className={style.profilePic}>
       <img
         src={avatar}
         onClick={() => setEnlarge(true)}
         className={style.avatar}
+        title="Click to enlarge"
         alt="profile picture"
       />
-      {loading && (
-        <div className={style.spinner}>
-          <Spinner />
-        </div>
-      )}
       {enlarge && (
         <EnlargedPic
           closeEnlargedPic={() => setEnlarge(false)}
           avatar={avatar}
         />
       )}
-      <label htmlFor="uploadAvatar" className={style.background}>
-        <div className={style.camera}></div>
-      </label>
-      <input
-        type="file"
-        onChange={uploadAvatar}
-        id={!loading ? 'uploadAvatar' : null}
-        accept="image/*"
-        style={{ display: 'none' }}
-      />
+      {loading && (
+        <div className={style.spinner}>
+          <Spinner />
+        </div>
+      )}
+      {avatar !== profilePic && (
+        <button
+          onClick={() => setDisplayPopup(true)}
+          className={style.removeAvatarBtn}
+          title="Remove avatar"
+          disabled={loading}
+        >
+          <Delete />
+        </button>
+      )}
+      {displayPopup && (
+        <Popup
+          message="Delete your profile picture?"
+          deletePost={removeAvatar}
+          deletePostLoading={loading}
+          closePopup={() => setDisplayPopup(false)}
+        />
+      )}
+      <UploadAvatar uploadAvatar={uploadAvatar} loading={loading} />
     </div>
   )
 }

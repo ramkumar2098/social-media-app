@@ -148,7 +148,7 @@ function Reply({ reply, post, posts, setPosts }) {
       <a href="#">
         <img
           src={
-            reply.avatar ? 'data:image/jpeg;base64,' + reply.avatar : profilePic
+            reply.avatar ? `data:image/jpeg;base64,${reply.avatar}` : profilePic
           }
           className={style.profilePic}
           style={{ width: '30px', height: '30px' }}
