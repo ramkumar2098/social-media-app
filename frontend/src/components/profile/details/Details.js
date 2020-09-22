@@ -18,7 +18,7 @@ function Details({ profile, setProfile }) {
     fetch('/editFirstName', {
       method: 'PUT',
       headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify({ _id: profile._id, editedFirstName }),
+      body: JSON.stringify({ editedFirstName }),
     })
       .then(response => response.json())
       .then(data => {
@@ -47,7 +47,7 @@ function Details({ profile, setProfile }) {
     fetch('/editLastName', {
       method: 'PUT',
       headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify({ _id: profile._id, editedLastName }),
+      body: JSON.stringify({ editedLastName }),
     })
       .then(response => response.json())
       .then(data => {

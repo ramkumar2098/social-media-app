@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import ProfilePic from './profilePic/ProfilePic'
 import Details from './details/Details'
 import ChangePassword from './changePassword/ChangePassword'
@@ -14,20 +15,28 @@ function Profile({ setDisplayBurger }) {
 
   const [profile, setProfile] = useState({})
 
+  const { userID } = useParams()
+
+  const url = '/profile/' + (userID || '')
+
   useEffect(() => {
-    fetch('/profile')
+    fetch(url)
       .then(response => response.json())
       .then(setProfile)
       .catch(console.log)
-  }, [])
+  }, [userID])
 
   return (
     Object.keys(profile).length > 0 && (
       <div className={style.profile}>
         <ProfilePic avatar={profile.avatar} />
         <Details profile={profile} setProfile={setProfile} />
-        <ChangePassword />
-        <DeleteAccount />
+        {!userID && (
+          <>
+            <ChangePassword />
+            <DeleteAccount />
+          </>
+        )}
       </div>
     )
   )

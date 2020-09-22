@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { POST_MAX_LENGTH } from 'appConstants'
+import { Link } from 'react-router-dom'
 import profilePic from 'images/profile.png'
 import EditPost from '../editPost/EditPost'
 import PostHead from '../postHead/PostHead'
@@ -145,7 +146,7 @@ function Reply({ reply, post, posts, setPosts }) {
 
   return (
     <div className={style.reply}>
-      <a href="#">
+      <Link to={'/profile/' + reply.userID}>
         <img
           src={
             reply.avatar ? `data:image/jpeg;base64,${reply.avatar}` : profilePic
@@ -154,7 +155,7 @@ function Reply({ reply, post, posts, setPosts }) {
           style={{ width: '30px', height: '30px' }}
           alt="profile picture"
         />
-      </a>
+      </Link>
       <div>
         {displayEditReply ? (
           <EditPost
@@ -167,6 +168,7 @@ function Reply({ reply, post, posts, setPosts }) {
         ) : (
           <div className={style.replyContainer}>
             <PostHead
+              userID={reply.userID}
               userName={reply.userName}
               date={reply.date}
               edited={reply.edited}

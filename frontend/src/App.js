@@ -52,6 +52,9 @@ function App() {
         <PrivateRoute path="/home">
           <Home setDisplayBurger={setDisplayBurger} />
         </PrivateRoute>
+        <PrivateRoute path="/profile/:userID">
+          <Profile setDisplayBurger={setDisplayBurger} />
+        </PrivateRoute>
         <PrivateRoute path="/profile">
           <Profile setDisplayBurger={setDisplayBurger} />
         </PrivateRoute>

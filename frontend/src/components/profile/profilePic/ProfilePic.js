@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import profilePic from 'images/profile2.jpg'
+import { useParams } from 'react-router-dom'
 import EnlargedPic from './enlargedPic/EnlargedPic'
 import Spinner from 'components/spinner/Spinner'
 import { ReactComponent as Delete } from 'SVGs/Delete.svg'
@@ -8,11 +9,13 @@ import UploadAvatar from './uploadAvatar/UploadAvatar'
 import style from './ProfilePic.module.css'
 
 function ProfilePic({ avatar: _avatar }) {
-  const [avatar, setAvatar] = useState(
-    _avatar ? `data:image/jpeg;base64,${_avatar}` : profilePic
-  )
+  const [avatar, setAvatar] = useState()
   const [enlarge, setEnlarge] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setAvatar(_avatar ? `data:image/jpeg;base64,${_avatar}` : profilePic)
+  }, [_avatar])
 
   const uploadAvatar = e => {
     if (!e.target.files?.length) return
@@ -56,6 +59,8 @@ function ProfilePic({ avatar: _avatar }) {
 
   const [displayPopup, setDisplayPopup] = useState(false)
 
+  const { userID } = useParams()
+
   return (
     <div className={style.profilePic}>
       <img
@@ -76,7 +81,7 @@ function ProfilePic({ avatar: _avatar }) {
           <Spinner />
         </div>
       )}
-      {avatar !== profilePic && (
+      {!userID && avatar !== profilePic && (
         <button
           onClick={() => setDisplayPopup(true)}
           className={style.removeAvatarBtn}
@@ -94,7 +99,9 @@ function ProfilePic({ avatar: _avatar }) {
           closePopup={() => setDisplayPopup(false)}
         />
       )}
-      <UploadAvatar uploadAvatar={uploadAvatar} loading={loading} />
+      {!userID && (
+        <UploadAvatar uploadAvatar={uploadAvatar} loading={loading} />
+      )}
     </div>
   )
 }

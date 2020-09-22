@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import JavascriptTimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import ReactTimeAgo from 'react-time-ago'
@@ -8,6 +9,7 @@ import style from './PostHead.module.css'
 JavascriptTimeAgo.addLocale(en)
 
 function PostHead({
+  userID,
   userName,
   date,
   edited,
@@ -17,7 +19,7 @@ function PostHead({
   return (
     <div className={style.postHead}>
       <div>
-        <a href="#">{userName}</a>{' '}
+        <Link to={'/profile/' + userID}>{userName}</Link>{' '}
         <span className={style.date}>
           <ReactTimeAgo date={date} /> {edited && '(edited)'}
         </span>
