@@ -4,6 +4,7 @@ import ProfilePic from './profilePic/ProfilePic'
 import Details from './details/Details'
 import ChangePassword from './changePassword/ChangePassword'
 import DeleteAccount from './deleteAccount/DeleteAccount'
+import Spinner from 'components/privateRoute/spinner/Spinner'
 import style from './Profile.module.css'
 
 function Profile({ setDisplayBurger }) {
@@ -26,19 +27,19 @@ function Profile({ setDisplayBurger }) {
       .catch(console.log)
   }, [userID])
 
-  return (
-    Object.keys(profile).length > 0 && (
-      <div className={style.profile}>
-        <ProfilePic avatar={profile.avatar} />
-        <Details profile={profile} setProfile={setProfile} />
-        {!userID && (
-          <>
-            <ChangePassword />
-            <DeleteAccount />
-          </>
-        )}
-      </div>
-    )
+  return Object.keys(profile).length > 0 ? (
+    <div className={style.profile}>
+      <ProfilePic avatar={profile.avatar} />
+      <Details profile={profile} setProfile={setProfile} />
+      {!userID && (
+        <>
+          <ChangePassword />
+          <DeleteAccount />
+        </>
+      )}
+    </div>
+  ) : (
+    <Spinner />
   )
 }
 

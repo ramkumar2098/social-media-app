@@ -511,6 +511,12 @@ app.get('/profile/:userID', async (req, res) => {
       { projection: { password: 0 } }
     )
 
+    const posts = await db
+      .collection('posts')
+      .find({ userID: req.params.userID })
+      .count()
+
+    user.posts = posts
     res.send(user || {})
   } catch (err) {
     console.log(err)
@@ -526,6 +532,12 @@ app.get('/profile', async (req, res) => {
       { projection: { password: 0 } }
     )
 
+    const posts = await db
+      .collection('posts')
+      .find({ userID: req.session.userID })
+      .count()
+
+    user.posts = posts
     res.send(user)
   } catch (err) {
     console.log(err)

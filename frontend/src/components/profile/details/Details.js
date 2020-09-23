@@ -126,6 +126,10 @@ function Details({ profile, setProfile }) {
             )}`}
         </span>
       </div>
+      <div>
+        <span>Posts: </span>
+        <span>{profile.posts}</span>
+      </div>
     </div>
   )
 }

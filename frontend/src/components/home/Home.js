@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { POST_MAX_LENGTH } from 'appConstants'
 import AddPost from './addPost/AddPost'
 import Posts from './posts/Posts'
+import Spinner from 'components/privateRoute/spinner/Spinner'
 import style from './Home.module.css'
 
 function Home({ setDisplayBurger }) {
@@ -51,7 +52,11 @@ function Home({ setDisplayBurger }) {
         clearPost={() => setPost('')}
         loading={loading}
       />
-      {posts.length > 0 && <Posts posts={posts} setPosts={setPosts} />}
+      {posts.length > 0 ? (
+        <Posts posts={posts} setPosts={setPosts} />
+      ) : (
+        <Spinner />
+      )}
     </div>
   )
 }

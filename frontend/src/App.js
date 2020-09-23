@@ -14,6 +14,7 @@ import Signup from './components/signUp/Signup'
 import Login from './components/login/Login'
 import Home from './components/home/Home'
 import Profile from 'components/profile/Profile'
+import Footer from 'components/footer/Footer'
 
 function App() {
   const [displayBurger, setDisplayBurger] = useState(false)
@@ -59,6 +60,7 @@ function App() {
           <Profile setDisplayBurger={setDisplayBurger} />
         </PrivateRoute>
       </Switch>
+      <Footer />
     </Router>
   )
 }
