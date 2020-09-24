@@ -511,13 +511,14 @@ app.get('/profile/:userID', async (req, res) => {
       { projection: { password: 0 } }
     )
 
-    const posts = await db
+    if (!user) return res.send({})
+
+    user.posts = await db
       .collection('posts')
       .find({ userID: req.params.userID })
       .count()
 
-    user.posts = posts
-    res.send(user || {})
+    res.send(user)
   } catch (err) {
     console.log(err)
   }
@@ -532,12 +533,11 @@ app.get('/profile', async (req, res) => {
       { projection: { password: 0 } }
     )
 
-    const posts = await db
+    user.posts = await db
       .collection('posts')
       .find({ userID: req.session.userID })
       .count()
 
-    user.posts = posts
     res.send(user)
   } catch (err) {
     console.log(err)
@@ -743,6 +743,27 @@ app.delete('/removeAvatar', async (req, res) => {
     )
 
     res.end()
+  } catch (err) {
+    console.log(err)
+  }
+})
+
+app.get('/people', async (req, res) => {
+  const col = db.collection('users')
+
+  try {
+    const users = await col
+      .aggregate([
+        {
+          $project: {
+            name: { $concat: ['$firstName', ' ', '$lastName'] },
+            avatar: 1,
+          },
+        },
+      ])
+      .toArray()
+
+    res.send(users)
   } catch (err) {
     console.log(err)
   }

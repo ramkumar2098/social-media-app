@@ -1,0 +1,12 @@
+.people {
+  width: 90%;
+  max-width: 700px;
+  margin: auto;
+  margin-top: 25px;
+}
+
+.query {
+  display: block;
+  padding: 4px 10px;
+  margin: auto;
+}

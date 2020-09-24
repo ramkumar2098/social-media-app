@@ -15,6 +15,7 @@ import Login from './components/login/Login'
 import Home from './components/home/Home'
 import Profile from 'components/profile/Profile'
 import Footer from 'components/footer/Footer'
+import People from 'components/people/People'
 
 function App() {
   const [displayBurger, setDisplayBurger] = useState(false)
@@ -58,6 +59,9 @@ function App() {
         </PrivateRoute>
         <PrivateRoute path="/profile">
           <Profile setDisplayBurger={setDisplayBurger} />
+        </PrivateRoute>
+        <PrivateRoute path="/people">
+          <People setDisplayBurger={setDisplayBurger} />
         </PrivateRoute>
       </Switch>
       <Footer />

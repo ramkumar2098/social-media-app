@@ -1,0 +1,25 @@
+.person {
+  margin-top: 16px;
+  position: relative;
+}
+
+.person:hover {
+  background-color: #eee;
+}
+
+.profilePic {
+  width: 50px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.name {
+  margin-left: 14px;
+}
+
+.overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+}

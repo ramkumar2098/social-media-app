@@ -52,11 +52,7 @@ function Home({ setDisplayBurger }) {
         clearPost={() => setPost('')}
         loading={loading}
       />
-      {posts.length > 0 ? (
-        <Posts posts={posts} setPosts={setPosts} />
-      ) : (
-        <Spinner />
-      )}
+      {posts.length > 0 ? <Posts {...{ posts, setPosts }} /> : <Spinner />}
     </div>
   )
 }

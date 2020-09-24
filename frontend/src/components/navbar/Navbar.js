@@ -27,8 +27,11 @@ function Navbar({
   const [redirect, setRedirect] = useState(false)
 
   const logOut = () => {
-    fetch('/logout', { method: 'POST' }).catch(console.log)
     setRedirect(true)
+
+    fetch('/logout', { method: 'POST' })
+      .then(() => setRedirect(false))
+      .catch(console.log)
   }
 
   return (
@@ -41,6 +44,7 @@ function Navbar({
       )}
       {displayBurger && displayNavItems && (
         <div className={style.navItems}>
+          <Link to="/people">People</Link>
           <Link to="/profile">Profile</Link>
           <button onClick={logOut}>Log out</button>
           {redirect && <Redirect to="/login" />}
