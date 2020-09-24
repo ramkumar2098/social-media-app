@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { POST_MAX_LENGTH } from 'appConstants'
 import AddPost from './addPost/AddPost'
 import Posts from './posts/Posts'
@@ -12,8 +12,23 @@ function Home({ setDisplayBurger }) {
     return () => setDisplayBurger(false)
   }, [])
 
-  const [post, setPost] = useState('')
   const [posts, setPosts] = useState([])
+
+  const postsRef = useRef()
+
+  useEffect(() => {
+    fetch('/posts')
+      .then(response => response.json())
+      .then(posts => {
+        setPosts(posts)
+        postsRef.current = posts
+
+        displayPosts()
+      })
+      .catch(console.log)
+  }, [])
+
+  const [post, setPost] = useState('')
   const [loading, setLoading] = useState(false)
 
   const addPost = () => {
@@ -31,17 +46,30 @@ function Home({ setDisplayBurger }) {
 
         setPost('')
         setLoading(false)
-        setPosts([post, ...posts])
+        postsRef.current = [post, ...postsRef.current]
+
+        displayPosts()
       })
       .catch(console.log)
   }
 
+  const [postsType, setPostsType] = useState(
+    localStorage.getItem('postsType') || 'All posts'
+  )
+
+  const displayPosts = () => {
+    const posts = postsRef.current
+
+    setPosts(
+      postsType === 'All posts'
+        ? posts
+        : posts.filter(({ userAuthoredThisPost }) => userAuthoredThisPost)
+    )
+  }
+
   useEffect(() => {
-    fetch('/posts')
-      .then(response => response.json())
-      .then(setPosts)
-      .catch(console.log)
-  }, [])
+    posts.length > 0 && displayPosts()
+  }, [postsType])
 
   return (
     <div className={style.home}>
@@ -52,7 +80,22 @@ function Home({ setDisplayBurger }) {
         clearPost={() => setPost('')}
         loading={loading}
       />
-      {posts.length > 0 ? <Posts {...{ posts, setPosts }} /> : <Spinner />}
+      <select
+        value={postsType}
+        onChange={e => {
+          setPostsType(e.target.value)
+          localStorage.setItem('postsType', e.target.value)
+        }}
+        className={style.postsType}
+      >
+        <option>All posts</option>
+        <option>Your posts</option>
+      </select>
+      {posts.length > 0 ? (
+        <Posts {...{ posts, setPosts, postsRef, displayPosts }} />
+      ) : (
+        <Spinner />
+      )}
     </div>
   )
 }

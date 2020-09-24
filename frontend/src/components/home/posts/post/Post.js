@@ -13,7 +13,7 @@ import ShowReply from './showReply/ShowReply'
 import Reply from './reply/Reply'
 import style from './Post.module.css'
 
-function Post({ post, posts, setPosts }) {
+function Post({ post, posts, setPosts, postsRef, displayPosts }) {
   const [displayDropdown, setDisplayDropdown] = useState(false)
   const openDropdown = () => setDisplayDropdown(true)
   const closeDropdown = () => setDisplayDropdown(false)
@@ -96,10 +96,12 @@ function Post({ post, posts, setPosts }) {
     })
       .then(() => {
         const postIndex = posts.findIndex(_post => _post._id === post._id)
-        posts.splice(postIndex, 1)
+        postsRef.current.splice(postIndex, 1)
 
         setDeletePostLoading(false)
-        setPosts([...posts])
+        postsRef.current = [...postsRef.current]
+
+        displayPosts()
       })
       .catch(console.log)
   }

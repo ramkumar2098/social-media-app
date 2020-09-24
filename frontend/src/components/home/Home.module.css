@@ -3,6 +3,14 @@
   margin: auto;
 }
 
+.postsType {
+  float: right;
+  padding: 5px;
+  margin-top: 16px;
+  margin-right: 13px;
+  cursor: pointer;
+}
+
 @media (min-width: 1100px) {
   .home {
     width: 70%;
