@@ -1,5 +1,5 @@
-.burger {
-  background-color: #1877f2;
+.burgerBtn {
+  background-color: var(--colorPrimary);
   color: #fff;
   font-size: 22px;
   border: 0;

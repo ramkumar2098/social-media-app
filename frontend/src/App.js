@@ -1,14 +1,8 @@
 import React, { useState } from 'react'
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from 'react-router-dom'
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom'
 import CheckAuth from 'components/checkAuth/CheckAuth'
 import PrivateRoute from 'components/privateRoute/PrivateRoute'
 import Navbar from './components/navbar/Navbar'
-import BurgerMenu from './components/burgerMenu/BurgerMenu'
 import Header from './components/header/Header'
 import Signup from './components/signUp/Signup'
 import Login from './components/login/Login'
@@ -19,26 +13,10 @@ import People from 'components/people/People'
 
 function App() {
   const [displayBurger, setDisplayBurger] = useState(false)
-  const [displayBurgerMenu, setDisplayBurgerMenu] = useState(false)
-
-  const openBurgerMenu = () => setDisplayBurgerMenu(true)
-  const closeBurgerMenu = () => setDisplayBurgerMenu(false)
-
-  const mediaQ = window.matchMedia('(min-width: 700px)')
-  const [displayNavItems, setDisplayNavItems] = useState(mediaQ.matches)
-  mediaQ.onchange = () => setDisplayNavItems(mediaQ.matches)
 
   return (
-    <Router>
-      <Navbar
-        displayBurger={displayBurger}
-        openBurgerMenu={openBurgerMenu}
-        displayNavItems={displayNavItems}
-        displayBurgerMenu={displayBurgerMenu}
-      />
-      {displayBurgerMenu && !displayNavItems && (
-        <BurgerMenu closeBurgerMenu={closeBurgerMenu} />
-      )}
+    <BrowserRouter>
+      <Navbar displayBurger={displayBurger} />
       <Switch>
         <Route path="/" exact>
           <Redirect to="/home" />
@@ -65,7 +43,7 @@ function App() {
         </PrivateRoute>
       </Switch>
       <Footer />
-    </Router>
+    </BrowserRouter>
   )
 }
 

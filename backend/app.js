@@ -141,32 +141,31 @@ app.get('/posts', async (req, res) => {
   const col = db.collection('posts')
 
   try {
-    const posts = await col.find().sort({ _id: -1 }).toArray()
+    const posts = await col
+      .aggregate([
+        {
+          $addFields: {
+            userLikedThisPost: { $in: [req.session.userID, '$likedBy'] },
+            userDislikedThisPost: { $in: [req.session.userID, '$dislikedBy'] },
+            userAuthoredThisPost: { $eq: ['$userID', req.session.userID] },
+          },
+        },
+        { $project: { likedBy: 0, dislikedBy: 0 } },
+        { $sort: { _id: -1 } },
+      ])
+      .toArray()
 
-    const userLikedThesePosts = posts.map(post =>
-      post.likedBy.includes(req.session.userID)
-    )
-    const userDislikedThesePosts = posts.map(post =>
-      post.dislikedBy.includes(req.session.userID)
-    )
     const userLikedTheseReplies = posts.map(post =>
       post.replies.map(reply => reply.likedBy.includes(req.session.userID))
     )
     const userDislikedTheseReplies = posts.map(post =>
       post.replies.map(reply => reply.dislikedBy.includes(req.session.userID))
     )
-    const userAuthoredThesePosts = posts.map(
-      post => post.userID === req.session.userID
-    )
     const userAuthoredTheseReplies = posts.map(post =>
       post.replies.map(reply => reply.userID === req.session.userID)
     )
 
     posts.forEach((post, i) => {
-      post.userLikedThisPost = userLikedThesePosts[i]
-      post.userDislikedThisPost = userDislikedThesePosts[i]
-      post.userAuthoredThisPost = userAuthoredThesePosts[i]
-
       post.replies.forEach((reply, _i) => {
         reply.userLikedThisReply = userLikedTheseReplies[i][_i]
         reply.userDislikedThisReply = userDislikedTheseReplies[i][_i]
@@ -255,10 +254,9 @@ app.put('/editPost', async (req, res) => {
   try {
     col.updateOne(
       { _id: mongodb.ObjectId(req.body._id) },
-      {
-        $set: { post: req.body.editedPost, edited: true },
-      }
+      { $set: { post: req.body.editedPost, edited: true } }
     )
+
     res.end()
   } catch (err) {
     console.log(err)
@@ -279,10 +277,8 @@ app.put('/editReply', async (req, res) => {
           'replies.$.reply': req.body.editedReply,
           'replies.$.edited': true,
         },
-      },
-      { returnOriginal: false }
+      }
     )
-
     res.end()
   } catch (err) {
     console.log(err)
@@ -306,12 +302,7 @@ app.delete('/deleteReply', async (req, res) => {
   try {
     col.updateOne(
       { _id: mongodb.ObjectId(req.body._id) },
-      {
-        $pull: {
-          replies: { id: mongodb.ObjectId(req.body.id) },
-        },
-      },
-      { returnOriginal: false }
+      { $pull: { replies: { id: mongodb.ObjectId(req.body.id) } } }
     )
 
     res.end()
@@ -324,9 +315,17 @@ app.post('/likePost', async (req, res) => {
   const col = db.collection('posts')
 
   try {
-    const post = await col.findOne({ _id: mongodb.ObjectId(req.body._id) })
-
-    const userDislikedThisPost = post.dislikedBy.includes(req.session.userID)
+    const [{ userDislikedThisPost }] = await col
+      .aggregate([
+        { $match: { _id: mongodb.ObjectId(req.body._id) } },
+        {
+          $project: {
+            _id: 0,
+            userDislikedThisPost: { $in: [req.session.userID, '$dislikedBy'] },
+          },
+        },
+      ])
+      .toArray()
 
     col.updateOne(
       { _id: mongodb.ObjectId(req.body._id) },
@@ -348,11 +347,9 @@ app.post('/unlikePost', async (req, res) => {
   try {
     col.updateOne(
       { _id: mongodb.ObjectId(req.body._id) },
-      {
-        $pull: { likedBy: req.session.userID },
-        $inc: { likes: -1 },
-      }
+      { $pull: { likedBy: req.session.userID }, $inc: { likes: -1 } }
     )
+
     res.end()
   } catch (err) {
     console.log(err)
@@ -363,9 +360,17 @@ app.post('/dislikePost', async (req, res) => {
   const col = db.collection('posts')
 
   try {
-    const post = await col.findOne({ _id: mongodb.ObjectId(req.body._id) })
-
-    const userLikedThisPost = post.likedBy.includes(req.session.userID)
+    const [{ userLikedThisPost }] = await col
+      .aggregate([
+        { $match: { _id: mongodb.ObjectId(req.body._id) } },
+        {
+          $project: {
+            _id: 0,
+            userLikedThisPost: { $in: [req.session.userID, '$likedBy'] },
+          },
+        },
+      ])
+      .toArray()
 
     col.updateOne(
       { _id: mongodb.ObjectId(req.body._id) },
@@ -387,11 +392,9 @@ app.post('/removeDislikePost', async (req, res) => {
   try {
     col.updateOne(
       { _id: mongodb.ObjectId(req.body._id) },
-      {
-        $pull: { dislikedBy: req.session.userID },
-        $inc: { dislikes: -1 },
-      }
+      { $pull: { dislikedBy: req.session.userID }, $inc: { dislikes: -1 } }
     )
+
     res.end()
   } catch (err) {
     console.log(err)
@@ -402,11 +405,21 @@ app.post('/likeReply', async (req, res) => {
   const col = db.collection('posts')
 
   try {
-    const post = await col.findOne({ _id: mongodb.ObjectId(req.body._id) })
-
-    const reply = post.replies.find(reply => reply.id == req.body.id)
-
-    const userDislikedThisReply = reply.dislikedBy.includes(req.session.userID)
+    const [{ userDislikedThisReply }] = await col
+      .aggregate([
+        { $match: { _id: mongodb.ObjectId(req.body._id) } },
+        { $unwind: '$replies' },
+        { $match: { 'replies.id': mongodb.ObjectId(req.body.id) } },
+        {
+          $project: {
+            _id: 0,
+            userDislikedThisReply: {
+              $in: [req.session.userID, '$replies.dislikedBy'],
+            },
+          },
+        },
+      ])
+      .toArray()
 
     col.updateOne(
       {
@@ -454,11 +467,21 @@ app.post('/dislikeReply', async (req, res) => {
   const col = db.collection('posts')
 
   try {
-    const post = await col.findOne({ _id: mongodb.ObjectId(req.body._id) })
-
-    const reply = post.replies.find(reply => reply.id == req.body.id)
-
-    const userLikedThisReply = reply.likedBy.includes(req.session.userID)
+    const [{ userLikedThisReply }] = await col
+      .aggregate([
+        { $match: { _id: mongodb.ObjectId(req.body._id) } },
+        { $unwind: '$replies' },
+        { $match: { 'replies.id': mongodb.ObjectId(req.body.id) } },
+        {
+          $project: {
+            _id: 0,
+            userLikedThisReply: {
+              $in: [req.session.userID, '$replies.likedBy'],
+            },
+          },
+        },
+      ])
+      .toArray()
 
     col.updateOne(
       {

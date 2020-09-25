@@ -12,20 +12,24 @@ function Actions({
   dislikes,
   openAddReply,
 }) {
+  const colorPrimary = getComputedStyle(
+    document.documentElement
+  ).getPropertyValue('--colorPrimary')
+
   return (
     <div className={style.actions}>
       <button
         onClick={toggleLikePost}
         title={userLikedThisPost ? 'Unlike' : 'Like'}
       >
-        <ThumbsUp style={{ fill: userLikedThisPost && '#1877f2' }} />
+        <ThumbsUp style={{ fill: userLikedThisPost && colorPrimary }} />
       </button>
       <span className={style.count}>{likes > 0 && likes}</span>
       <button
         onClick={toggleDislikePost}
         title={userDislikedThisPost ? 'Remove Dislike' : 'Dislike'}
       >
-        <ThumbsDown style={{ fill: userDislikedThisPost && '#1877f2' }} />
+        <ThumbsDown style={{ fill: userDislikedThisPost && colorPrimary }} />
       </button>
       <span className={style.count}>{dislikes > 0 && dislikes}</span>
       <span>

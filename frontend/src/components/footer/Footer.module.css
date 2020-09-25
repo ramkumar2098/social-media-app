@@ -1,5 +1,5 @@
 .footer {
-  background-color: #1877f2;
+  background-color: var(--colorPrimary);
   color: #fff;
   font-size: 15px;
   width: 100%;

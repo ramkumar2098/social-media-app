@@ -1,14 +1,11 @@
 import React, { useRef, useState } from 'react'
-import { Link, Redirect } from 'react-router-dom'
-import Burger from './burger/Burger'
+import { Link } from 'react-router-dom'
+import NavItems from './navItems/NavItems'
+import BurgerMenu from './burgerMenu/BurgerMenu'
 import style from './Navbar.module.css'
+import Burger from './burger/Burger'
 
-function Navbar({
-  displayBurger,
-  openBurgerMenu,
-  displayNavItems,
-  displayBurgerMenu,
-}) {
+function Navbar({ displayBurger }) {
   const navbarRef = useRef()
 
   let prevScrollPos = window.pageYOffset
@@ -34,23 +31,29 @@ function Navbar({
       .catch(console.log)
   }
 
+  const mediaQ = window.matchMedia('(min-width: 700px)')
+  const [largeScreen, setLargeScreen] = useState(mediaQ.matches)
+  mediaQ.onchange = () => setLargeScreen(mediaQ.matches)
+
+  const [displayBurgerMenu, setDisplayBurgerMenu] = useState(false)
+
   return (
-    <div ref={navbarRef} className={style.navbar}>
-      <Link to="/home" className={style.logo}>
-        FakeBook
-      </Link>
-      {displayBurger && !displayNavItems && (
-        <Burger openBurgerMenu={openBurgerMenu} />
+    <>
+      <div ref={navbarRef} className={style.navbar}>
+        <Link to="/home" className={style.logo}>
+          FakeBook
+        </Link>
+        {displayBurger &&
+          (largeScreen ? (
+            <NavItems logOut={logOut} redirect={redirect} className="navbar" />
+          ) : (
+            <Burger openBurgerMenu={() => setDisplayBurgerMenu(true)} />
+          ))}
+      </div>
+      {displayBurgerMenu && !largeScreen && (
+        <BurgerMenu closeBurgerMenu={() => setDisplayBurgerMenu(false)} />
       )}
-      {displayBurger && displayNavItems && (
-        <div className={style.navItems}>
-          <Link to="/people">People</Link>
-          <Link to="/profile">Profile</Link>
-          <button onClick={logOut}>Log out</button>
-          {redirect && <Redirect to="/login" />}
-        </div>
-      )}
-    </div>
+    </>
   )
 }
 

@@ -1,5 +1,5 @@
 .navbar {
-  background-color: #1877f2;
+  background-color: var(--colorPrimary);
   text-align: center;
   position: sticky;
   top: 0;
@@ -13,42 +13,4 @@
   color: #fff;
   font-size: 20px;
   font-weight: 600;
-}
-
-.navItems {
-  position: absolute;
-  top: 15px;
-  right: 14px;
-  margin-right: 5px;
-}
-
-.navItems > a {
-  text-decoration: none;
-  color: #fff;
-  font-weight: 600;
-  margin-right: 20px;
-}
-
-.navItems > :hover {
-  opacity: 0.6;
-}
-
-.navItems > button {
-  background-color: #1877f2;
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
-  padding: 0;
-  border: 0;
-  cursor: pointer;
-}
-
-@media (min-width: 900px) {
-  .navItems {
-    margin-right: 10px;
-  }
-
-  .navItems > a:first-child {
-    margin-right: 25px;
-  }
 }

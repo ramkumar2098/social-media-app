@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Link, Redirect } from 'react-router-dom'
 import Overlay from './overlay/Overlay'
-import style from './BurgerMenu.module.css'
+import NavItems from '../navItems/NavItems'
 
 function BurgerMenu({ closeBurgerMenu }) {
   useEffect(() => {
@@ -28,12 +27,7 @@ function BurgerMenu({ closeBurgerMenu }) {
   return (
     <>
       <Overlay />
-      <div className={style.burgerMenu}>
-        <Link to="/people">People</Link>
-        <Link to="/profile">Profile</Link>
-        <button onClick={logOut}>Log out</button>
-        {redirect && <Redirect to="/login" />}
-      </div>
+      <NavItems logOut={logOut} redirect={redirect} className="burgerMenu" />
     </>
   )
 }

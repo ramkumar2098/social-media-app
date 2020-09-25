@@ -22,7 +22,7 @@
 }
 
 .btn {
-  background-color: #1877f2;
+  background-color: var(--colorPrimary);
   color: #fff;
   width: 50%;
   height: 60%;
@@ -42,7 +42,7 @@
 .link {
   display: block;
   text-align: center;
-  color: #1877f2;
+  color: var(--colorPrimary);
   text-decoration: none;
   margin-top: 17px;
 }

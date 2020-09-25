@@ -225,13 +225,7 @@ function Post({ post, posts, setPosts, postsRef, displayPosts }) {
         )}
         {displayReplies &&
           post.replies.map(reply => (
-            <Reply
-              key={reply.id}
-              reply={reply}
-              post={post}
-              posts={posts}
-              setPosts={setPosts}
-            />
+            <Reply key={reply.id} {...{ reply, post, posts, setPosts }} />
           ))}
       </div>
     </div>

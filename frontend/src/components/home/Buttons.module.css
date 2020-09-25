@@ -4,7 +4,7 @@
 }
 
 .buttons > button:first-child {
-  background-color: #1877f2;
+  background-color: var(--colorPrimary);
   margin-right: 13px;
 }
 
