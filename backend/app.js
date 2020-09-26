@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 import mongodb from 'mongodb'
 import session from 'express-session'
 import connectMongo from 'connect-mongo'
-import { capitalize } from './utils.js'
+import { capitalize, isHex } from './utils.js'
 import {
   validateFirstName,
   validateLastName,
@@ -26,7 +26,7 @@ const col = db.collection('users')
 const SESS_NAME = 'sid'
 const FIVE_MINUTES = 1000 * 60 * 5
 
-app.use(express.json({ limit: '250kb' }))
+app.use(express.json())
 app.use(
   session({
     name: SESS_NAME,
@@ -46,7 +46,13 @@ app.post('/auth', (req, res) => {
 })
 
 app.post('/signup', async (req, res) => {
-  const { firstName, lastName, email, password, confirmPassword } = req.body
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmPassword,
+  } = req.body.values
 
   const [_firstName, _lastName, _email, _password, _confirmPassword] = [
     capitalize(firstName.trim()),
@@ -528,21 +534,27 @@ app.post('/removeDislikeReply', async (req, res) => {
 app.get('/profile/:userID', async (req, res) => {
   const col = db.collection('users')
 
+  const userID = req.params.userID
+  const userDoestExist = () => {
+    res.statusMessage = "user doesn't exist"
+    return res.status(404).end()
+  }
+
+  if (userID.length !== 24 || !isHex(userID)) return userDoestExist()
+
   try {
     const user = await col.findOne(
-      { _id: mongodb.ObjectId(req.params.userID) },
+      { _id: mongodb.ObjectId(userID) },
       { projection: { password: 0 } }
     )
 
-    if (!user) return res.send({})
+    if (!user) return userDoestExist()
 
-    user.posts = await db
-      .collection('posts')
-      .find({ userID: req.params.userID })
-      .count()
+    user.posts = await db.collection('posts').find({ userID }).count()
 
     res.send(user)
   } catch (err) {
+    res.status(500).send(err)
     console.log(err)
   }
 })

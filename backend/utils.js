@@ -13,3 +13,9 @@ export function containsSpecialCharacters(str) {
 
   return regExp.test(str)
 }
+
+export function isHex(str) {
+  const regexp = /^[0-9a-fA-F]+$/
+
+  return regexp.test(str)
+}

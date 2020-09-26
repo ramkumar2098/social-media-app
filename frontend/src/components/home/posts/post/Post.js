@@ -95,7 +95,9 @@ function Post({ post, posts, setPosts, postsRef, displayPosts }) {
       body: JSON.stringify({ _id: post._id }),
     })
       .then(() => {
-        const postIndex = posts.findIndex(_post => _post._id === post._id)
+        const postIndex = postsRef.current.findIndex(
+          _post => _post._id === post._id
+        )
         postsRef.current.splice(postIndex, 1)
 
         setDeletePostLoading(false)

@@ -22,10 +22,20 @@ function Profile({ setDisplayBurger }) {
 
   useEffect(() => {
     fetch(url)
-      .then(response => response.json())
-      .then(setProfile)
-      .catch(console.log)
+      .then(response => {
+        if (response.ok) return response.json()
+        throw response.statusText
+      })
+      .then(profile => {
+        setError('')
+        setProfile(profile)
+      })
+      .catch(setError)
   }, [userID])
+
+  const [error, setError] = useState('')
+
+  if (error) return <div>{error}</div>
 
   return Object.keys(profile).length > 0 ? (
     <div className={style.profile}>

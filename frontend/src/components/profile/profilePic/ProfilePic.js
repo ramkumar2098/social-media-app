@@ -17,10 +17,20 @@ function ProfilePic({ avatar: _avatar }) {
     setAvatar(_avatar ? `data:image/jpeg;base64,${_avatar}` : profilePic)
   }, [_avatar])
 
-  const uploadAvatar = e => {
+  const compress = img => {
+    const elem = document.createElement('canvas')
+    const ctx = elem.getContext('2d')
+    const width = 600
+    const scaleFactor = width / img.width
+    elem.width = width
+    elem.height = img.height * scaleFactor
+    ctx.drawImage(img, 0, 0, width, img.height * scaleFactor)
+
+    return ctx.canvas.toDataURL('image/jpeg', 0.7)
+  }
+
+  function uploadAvatar(e) {
     if (!e.target.files?.length) return
-    if (e.target.files[0].size > 200_000)
-      return alert('Image upload limit is 200kb')
 
     setLoading(true)
 
@@ -31,6 +41,14 @@ function ProfilePic({ avatar: _avatar }) {
       reader.onerror = error => reject(error)
     })
       .then(dataUrl => {
+        const img = new Image()
+        img.src = dataUrl
+        return img
+      })
+      .then(compress)
+      .then(dataUrl => {
+        if (dataUrl.length > 100_000) return alert('Image too large')
+
         fetch('/uploadAvatar', {
           method: 'POST',
           headers: { 'Content-type': 'application/json' },

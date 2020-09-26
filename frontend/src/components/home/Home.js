@@ -13,13 +13,17 @@ function Home({ setDisplayBurger }) {
   }, [])
 
   const [posts, setPosts] = useState([])
+  const [postsLoading, setPostsLoading] = useState([])
 
   const postsRef = useRef()
 
   useEffect(() => {
+    setPostsLoading(true)
+
     fetch('/posts')
       .then(response => response.json())
       .then(posts => {
+        setPostsLoading(false)
         setPosts(posts)
         postsRef.current = posts
 
@@ -68,7 +72,7 @@ function Home({ setDisplayBurger }) {
   }
 
   useEffect(() => {
-    posts.length > 0 && displayPosts()
+    postsRef.current?.length > 0 && displayPosts()
   }, [postsType])
 
   return (
@@ -94,8 +98,13 @@ function Home({ setDisplayBurger }) {
       {posts.length > 0 ? (
         <Posts {...{ posts, setPosts, postsRef, displayPosts }} />
       ) : (
-        <Spinner />
+        !postsLoading && (
+          <div style={{ clear: 'right', textAlign: 'center' }}>
+            no posts found
+          </div>
+        )
       )}
+      {postsLoading && <Spinner />}
     </div>
   )
 }

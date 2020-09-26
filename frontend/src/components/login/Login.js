@@ -1,21 +1,23 @@
 import React, { useState, useRef } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import useForm from 'hooks/useForm'
 import Error from '../error/Error'
 import PasswordIcon from '../passwordIcon/PasswordIcon'
 import Spinner from '../spinner/Spinner'
+import { Link, useHistory } from 'react-router-dom'
 import style from '../Form.module.css'
 import style1 from './Login.module.css'
 
 function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [emailError, setEmailError] = useState('')
-  const [passwordError, setPasswordError] = useState('')
   const [passwordInputType, setPasswordInputType] = useState('password')
-  const [spinner, setSpinner] = useState(false)
 
+  const { values, handleChange } = useForm()
+  const { email, password } = values
+
+  const [errors, setErrors] = useState({})
+  const { emailError, passwordError } = errors
+
+  const [loading, setLoading] = useState(false)
   const LogInBtnRef = useRef()
-
   const { push } = useHistory()
 
   const submitForm = e => {
@@ -23,7 +25,7 @@ function Login() {
 
     LogInBtnRef.current.disabled = true
     LogInBtnRef.current.classList.add(style.disable)
-    setSpinner(true)
+    setLoading(true)
 
     fetch('/login', {
       method: 'POST',
@@ -32,18 +34,12 @@ function Login() {
     })
       .then(response => response.json())
       .then(data => {
-        const { emailError, passwordError } = data
+        if (data.path) return push(data.path)
 
-        if (emailError || passwordError) {
-          setEmailError(emailError)
-          setPasswordError(passwordError)
-
-          LogInBtnRef.current.disabled = false
-          LogInBtnRef.current.classList.remove(style.disable)
-          setSpinner(false)
-        } else {
-          push(data.path)
-        }
+        setErrors(data)
+        LogInBtnRef.current.disabled = false
+        LogInBtnRef.current.classList.remove(style.disable)
+        setLoading(false)
       })
       .catch(console.log)
   }
@@ -60,7 +56,7 @@ function Login() {
             type="email"
             id="email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={handleChange}
             required
           />
           {emailError && <Error error={emailError} />}
@@ -71,7 +67,7 @@ function Login() {
             type={passwordInputType}
             id="password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={handleChange}
             required
           />
           {passwordInputType === 'password' ? (
@@ -82,7 +78,7 @@ function Login() {
           {passwordError && <Error error={passwordError} />}
         </div>
         <button ref={LogInBtnRef} className={style.btn}>
-          {spinner && <Spinner />}
+          {loading && <Spinner />}
           <span>Log In</span>
         </button>
         <div>

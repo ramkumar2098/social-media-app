@@ -1,105 +1,69 @@
 import React, { useState, useRef } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import useForm from 'hooks/useForm'
 import Error from '../error/Error'
 import PasswordIcon from '../passwordIcon/PasswordIcon'
 import Spinner from '../spinner/Spinner'
+import { Link, useHistory } from 'react-router-dom'
 import style from '../Form.module.css'
 import style1 from './Signup.module.css'
 
 function Signup() {
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
-
-  const [firstNameError, setFirstNameError] = useState('')
-  const [lastNameError, setLastNameError] = useState('')
-  const [emailError, setEmailError] = useState('')
-  const [passwordError, setPasswordError] = useState('')
-  const [confirmPasswordError, setConfirmPasswordError] = useState('')
-
   const [passwordInputType, setPasswordInputType] = useState('password')
   const [confirmPasswordInputType, setConfirmPasswordInputType] = useState(
     'password'
   )
-  const [spinner, setSpinner] = useState(false)
+  const { values, handleChange } = useForm()
+  const { firstName, lastName, email, password, confirmPassword } = values
 
-  const passwordErrorRef = useRef()
-  const confirmPasswordErrorRef = useRef()
+  const [errors, setErrors] = useState({})
+  const {
+    firstNameError,
+    lastNameError,
+    emailError,
+    passwordError,
+    confirmPasswordError,
+  } = errors
+
+  const [loading, setLoading] = useState(false)
   const signUpBtnRef = useRef()
-
   const { push } = useHistory()
 
   const submitForm = e => {
     e.preventDefault()
+    let _errors = { ...errors }
 
-    if (password.length < 8) {
-      setPasswordError('Password too weak')
-      passwordErrorRef.current = 'Password too weak'
-    } else {
-      setPasswordError('')
-      passwordErrorRef.current = ''
-    }
+    _errors.passwordError = password.length < 8 ? 'Password too weak' : ''
 
-    if (password.length >= 8 && password !== confirmPassword) {
-      setConfirmPasswordError("Passwords didn't match")
-      confirmPasswordErrorRef.current = "Passwords didn't match"
-    } else {
-      setConfirmPasswordError('')
-      confirmPasswordErrorRef.current = ''
-    }
+    _errors.confirmPasswordError =
+      password.length >= 8 && password !== confirmPassword
+        ? "Passwords didn't match"
+        : ''
 
-    const a = firstNameError || lastNameError || emailError
-    const b = passwordErrorRef.current || confirmPasswordErrorRef.current
+    setErrors(_errors)
+
+    const a =
+      _errors.firstNameError || _errors.lastNameError || _errors.emailError
+    const b = _errors.passwordError || _errors.confirmPasswordError
 
     if (!a && b) return
 
     signUpBtnRef.current.disabled = true
     signUpBtnRef.current.classList.add(style.disable)
-    setSpinner(true)
+    setLoading(true)
 
     fetch('/signup', {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
-      body: JSON.stringify({
-        firstName,
-        lastName,
-        email,
-        password,
-        confirmPassword,
-      }),
+      body: JSON.stringify({ values }),
     })
       .then(response => response.json())
       .then(data => {
-        const {
-          firstNameError,
-          lastNameError,
-          emailError,
-          passwordError,
-          confirmPasswordError,
-        } = data
+        if (data.path) return push(data.path)
 
-        const errors =
-          firstNameError ||
-          lastNameError ||
-          emailError ||
-          passwordError ||
-          confirmPasswordError
-
-        if (errors) {
-          setFirstNameError(firstNameError)
-          setLastNameError(lastNameError)
-          setEmailError(emailError)
-          setPasswordError(passwordError)
-          setConfirmPasswordError(confirmPasswordError)
-
-          signUpBtnRef.current.disabled = false
-          signUpBtnRef.current.classList.remove(style.disable)
-          setSpinner(false)
-        } else {
-          push(data.path)
-        }
+        setErrors(data)
+        signUpBtnRef.current.disabled = false
+        signUpBtnRef.current.classList.remove(style.disable)
+        setLoading(false)
       })
       .catch(console.log)
   }
@@ -117,7 +81,7 @@ function Signup() {
           <input
             id="firstName"
             value={firstName}
-            onChange={e => setFirstName(e.target.value)}
+            onChange={handleChange}
             required
           />
           {firstNameError && <Error error={firstNameError} />}
@@ -127,7 +91,7 @@ function Signup() {
           <input
             id="lastName"
             value={lastName}
-            onChange={e => setLastName(e.target.value)}
+            onChange={handleChange}
             required
           />
           {lastNameError && <Error error={lastNameError} />}
@@ -138,7 +102,7 @@ function Signup() {
             type="email"
             id="email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={handleChange}
             required
           />
           {emailError && <Error error={emailError} />}
@@ -149,7 +113,7 @@ function Signup() {
             type={passwordInputType}
             id="password"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={handleChange}
             required
           />
           {passwordInputType === 'password' ? (
@@ -165,7 +129,7 @@ function Signup() {
             type={confirmPasswordInputType}
             id="confirmPassword"
             value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
+            onChange={handleChange}
             className={style1.confirmPassword}
             required
           />
@@ -177,7 +141,7 @@ function Signup() {
           {confirmPasswordError && <Error error={confirmPasswordError} />}
         </div>
         <button ref={signUpBtnRef} className={style.btn}>
-          {spinner && <Spinner />}
+          {loading && <Spinner />}
           <span>Sign Up</span>
         </button>
         <Link to="/login" className={style.link}>
