@@ -15,7 +15,7 @@ function Details({ profile, setProfile }) {
     if (!editedFirstName) return
     setLoading(true)
 
-    fetch('/editFirstName', {
+    fetch('/profile/editFirstName', {
       method: 'PUT',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ editedFirstName }),
@@ -44,7 +44,7 @@ function Details({ profile, setProfile }) {
     if (!editedLastName) return
     setLastNameLoading(true)
 
-    fetch('/editLastName', {
+    fetch('/profile/editLastName', {
       method: 'PUT',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ editedLastName }),

@@ -26,7 +26,7 @@ function DeleteAccount() {
   const deleteAccount = () => {
     setLoading(true)
 
-    fetch('/deleteAccount', {
+    fetch('/profile/deleteAccount', {
       method: 'DELETE',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ password }),

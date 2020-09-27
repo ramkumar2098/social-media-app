@@ -29,7 +29,7 @@ function ChangePassword() {
     }
     setLoading(true)
 
-    fetch('/changePassword', {
+    fetch('/profile/changePassword', {
       method: 'PUT',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ currentPassword, newPassword }),

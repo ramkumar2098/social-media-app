@@ -3,7 +3,7 @@ import { Route, Redirect } from 'react-router-dom'
 import Spinner from 'components/spinner/Spinner'
 
 function PrivateRoute({ children, ...rest }) {
-  const [loggedIn, setLoggedIn] = useState('verifying')
+  const [loggedIn, setLoggedIn] = useState(null)
 
   useEffect(() => {
     fetch('/auth', { method: 'POST' })
@@ -12,18 +12,12 @@ function PrivateRoute({ children, ...rest }) {
       .catch(console.log)
   }, [])
 
+  if (loggedIn === null) return <Spinner />
+
   return (
     <Route
       {...rest}
-      render={() =>
-        loggedIn === 'verifying' ? (
-          <Spinner />
-        ) : loggedIn ? (
-          children
-        ) : (
-          <Redirect to="/login" />
-        )
-      }
+      render={() => (loggedIn ? children : <Redirect to="/login" />)}
     />
   )
 }

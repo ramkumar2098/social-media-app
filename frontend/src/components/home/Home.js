@@ -40,7 +40,7 @@ function Home({ setDisplayBurger }) {
     if (!post || post.length > POST_MAX_LENGTH) return
     setLoading(true)
 
-    fetch('/addPost', {
+    fetch('/posts/addPost', {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ post }),

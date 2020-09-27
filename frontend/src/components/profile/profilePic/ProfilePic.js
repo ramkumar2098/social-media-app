@@ -49,7 +49,7 @@ function ProfilePic({ avatar: _avatar }) {
       .then(dataUrl => {
         if (dataUrl.length > 100_000) return alert('Image too large')
 
-        fetch('/uploadAvatar', {
+        fetch('/profile/uploadAvatar', {
           method: 'POST',
           headers: { 'Content-type': 'application/json' },
           body: JSON.stringify({ dataUrl }),
@@ -66,7 +66,7 @@ function ProfilePic({ avatar: _avatar }) {
   const removeAvatar = () => {
     setLoading(true)
 
-    fetch('/removeAvatar', { method: 'DELETE' })
+    fetch('/profile/removeAvatar', { method: 'DELETE' })
       .then(() => {
         setLoading(false)
         setAvatar(profilePic)

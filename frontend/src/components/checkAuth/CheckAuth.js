@@ -3,7 +3,7 @@ import { Route, Redirect } from 'react-router-dom'
 import Spinner from 'components/spinner/Spinner'
 
 function CheckAuth({ children, ...rest }) {
-  const [loggedIn, setLoggedIn] = useState('verifying')
+  const [loggedIn, setLoggedIn] = useState(null)
 
   useEffect(() => {
     fetch('/auth', { method: 'POST' })
@@ -12,18 +12,12 @@ function CheckAuth({ children, ...rest }) {
       .catch(console.log)
   }, [])
 
+  if (loggedIn === null) return <Spinner />
+
   return (
     <Route
       {...rest}
-      render={() =>
-        loggedIn === 'verifying' ? (
-          <Spinner />
-        ) : loggedIn ? (
-          <Redirect to="/home" />
-        ) : (
-          children
-        )
-      }
+      render={() => (loggedIn ? <Redirect to="/home" /> : children)}
     />
   )
 }

@@ -63,7 +63,7 @@ function Reply({ reply, post, posts, setPosts }) {
     if (!editedReply || editedReply.length > POST_MAX_LENGTH) return
     setUpdateReplyLoading(true)
 
-    fetch('/editReply', {
+    fetch('/posts/editReply', {
       method: 'PUT',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id, id: reply.id, editedReply }),
@@ -85,7 +85,7 @@ function Reply({ reply, post, posts, setPosts }) {
   const deleteReply = () => {
     setDeleteReplyLoading(true)
 
-    fetch('/deleteReply', {
+    fetch('/posts/deleteReply', {
       method: 'DELETE',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id, id: reply.id }),
@@ -103,7 +103,7 @@ function Reply({ reply, post, posts, setPosts }) {
   }
 
   const toggleLikeReply = () => {
-    const url = reply.userLikedThisReply ? '/unlikeReply' : 'likeReply'
+    const url = reply.userLikedThisReply ? 'unlikeReply' : 'likeReply'
 
     reply.likes = reply.userLikedThisReply ? reply.likes - 1 : reply.likes + 1
     reply.userLikedThisReply = !reply.userLikedThisReply
@@ -115,7 +115,7 @@ function Reply({ reply, post, posts, setPosts }) {
 
     setPosts([...posts])
 
-    fetch(url, {
+    fetch('posts/' + url, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id, id: reply.id }),
@@ -124,7 +124,7 @@ function Reply({ reply, post, posts, setPosts }) {
 
   const toggleDislikeReply = () => {
     const url = reply.userDislikedThisReply
-      ? '/removeDislikeReply'
+      ? 'removeDislikeReply'
       : 'dislikeReply'
 
     reply.dislikes = reply.userDislikedThisReply
@@ -137,7 +137,7 @@ function Reply({ reply, post, posts, setPosts }) {
 
     setPosts([...posts])
 
-    fetch(url, {
+    fetch('posts/' + url, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id, id: reply.id }),

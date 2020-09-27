@@ -41,7 +41,7 @@ function Post({ post, posts, setPosts, postsRef, displayPosts }) {
     if (!reply || reply.length > POST_MAX_LENGTH) return
     setLoading(true)
 
-    fetch('/addReply', {
+    fetch('/posts/addReply', {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id, reply }),
@@ -67,7 +67,7 @@ function Post({ post, posts, setPosts, postsRef, displayPosts }) {
     if (!editedPost || editedPost.length > POST_MAX_LENGTH) return
     setUpdatePostLoading(true)
 
-    fetch('/editPost', {
+    fetch('/posts/editPost', {
       method: 'PUT',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id, editedPost }),
@@ -89,7 +89,7 @@ function Post({ post, posts, setPosts, postsRef, displayPosts }) {
   const deletePost = () => {
     setDeletePostLoading(true)
 
-    fetch('/deletePost', {
+    fetch('/posts/deletePost', {
       method: 'DELETE',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id }),
@@ -109,7 +109,7 @@ function Post({ post, posts, setPosts, postsRef, displayPosts }) {
   }
 
   const toggleLikePost = () => {
-    const url = post.userLikedThisPost ? '/unlikePost' : 'likePost'
+    const url = post.userLikedThisPost ? 'unlikePost' : 'likePost'
 
     post.likes = post.userLikedThisPost ? post.likes - 1 : post.likes + 1
     post.userLikedThisPost = !post.userLikedThisPost
@@ -121,7 +121,7 @@ function Post({ post, posts, setPosts, postsRef, displayPosts }) {
 
     setPosts([...posts])
 
-    fetch(url, {
+    fetch('posts/' + url, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id }),
@@ -129,7 +129,7 @@ function Post({ post, posts, setPosts, postsRef, displayPosts }) {
   }
 
   const toggleDislikePost = () => {
-    const url = post.userDislikedThisPost ? '/removeDislikePost' : 'dislikePost'
+    const url = post.userDislikedThisPost ? 'removeDislikePost' : 'dislikePost'
 
     post.dislikes = post.userDislikedThisPost
       ? post.dislikes - 1
@@ -141,7 +141,7 @@ function Post({ post, posts, setPosts, postsRef, displayPosts }) {
 
     setPosts([...posts])
 
-    fetch(url, {
+    fetch('posts/' + url, {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id }),
