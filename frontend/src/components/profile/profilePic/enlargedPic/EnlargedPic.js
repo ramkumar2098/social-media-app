@@ -1,23 +1,11 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef } from 'react'
+import { useAttachEvents } from 'hooks/useAttachEvents'
 import style from './EnlargedPic.module.css'
 
 function EnlargedPic({ closeEnlargedPic, avatar }) {
   const enlargedPicRef = useRef()
 
-  useEffect(() => {
-    const handleEvent = e =>
-      (e.keyCode === 27 || enlargedPicRef.current.isEqualNode(e.target)) &&
-      closeEnlargedPic()
-
-    ;['click', 'keyup'].forEach(event =>
-      window.addEventListener(event, handleEvent)
-    )
-
-    return () =>
-      ['click', 'keyup'].forEach(event =>
-        window.removeEventListener(event, handleEvent)
-      )
-  }, [])
+  useAttachEvents(closeEnlargedPic, enlargedPicRef)
 
   return (
     <div ref={enlargedPicRef} className={style.enlargedPic}>

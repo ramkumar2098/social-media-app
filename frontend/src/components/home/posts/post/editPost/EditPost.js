@@ -1,8 +1,7 @@
 import React from 'react'
 import { POST_MAX_LENGTH } from 'constants/constants'
-import ButtonSpinner from 'components/buttonSpinner/ButtonSpinner'
+import Buttons from 'components/buttons/Buttons'
 import style from './EditPost.module.css'
-import { buttons } from 'components/Buttons.module.css'
 
 function EditPost({
   editedPost,
@@ -25,23 +24,20 @@ function EditPost({
         placeholder="Edit your post"
         autoFocus
       />
-      <div className={buttons} style={{ marginBottom: 0 }}>
-        <button
-          onClick={updatePost}
-          disabled={updatePostLoading}
-          style={{
-            opacity:
-              updatePostLoading || editedPost.length > POST_MAX_LENGTH
-                ? 0.8
-                : editedPost
-                ? 1
-                : 0.8,
-          }}
-        >
-          {updatePostLoading && <ButtonSpinner />}Save
-        </button>
-        <button onClick={closeEditPost}>Cancel</button>
-      </div>
+      <Buttons
+        text="Save"
+        submit={updatePost}
+        loading={updatePostLoading}
+        cancel={closeEditPost}
+        opacity={
+          updatePostLoading || editedPost.length > POST_MAX_LENGTH
+            ? 0.8
+            : editedPost
+            ? 1
+            : 0.8
+        }
+        styles={{ marginBottom: 0 }}
+      />
       {editedPost.length >= POST_MAX_LENGTH && (
         <div style={{ color: 'red' }}>Post reached maximum limit</div>
       )}

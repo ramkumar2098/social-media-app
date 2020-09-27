@@ -21,26 +21,29 @@ function App() {
         <Route path="/" exact>
           <Redirect to="/home" />
         </Route>
-        <CheckAuth path="/signup">
+        <CheckAuth path="/signup" exact>
           <Header header="Create your account" />
           <Signup />
         </CheckAuth>
-        <CheckAuth path="/login">
+        <CheckAuth path="/login" exact>
           <Header header="Log in to Fakebook" />
           <Login />
         </CheckAuth>
-        <PrivateRoute path="/home">
+        <PrivateRoute path="/home" exact>
           <Home setDisplayBurger={setDisplayBurger} />
         </PrivateRoute>
-        <PrivateRoute path="/profile/:userID">
+        <PrivateRoute path="/profile/:userID" exact>
           <Profile setDisplayBurger={setDisplayBurger} />
         </PrivateRoute>
-        <PrivateRoute path="/profile">
+        <PrivateRoute path="/profile" exact>
           <Profile setDisplayBurger={setDisplayBurger} />
         </PrivateRoute>
-        <PrivateRoute path="/people">
+        <PrivateRoute path="/people" exact>
           <People setDisplayBurger={setDisplayBurger} />
         </PrivateRoute>
+        <Route>
+          <div>404</div>
+        </Route>
       </Switch>
       <Footer />
     </BrowserRouter>

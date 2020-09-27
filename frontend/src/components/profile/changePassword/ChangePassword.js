@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import Error from '../error/Error'
-import ButtonSpinner from 'components/buttonSpinner/ButtonSpinner'
+import Buttons from 'components/buttons/Buttons'
 import Logout from 'components/logout/Logout'
-import { buttons } from 'components/Buttons.module.css'
 import { button, password } from '../Profile.module.css'
 
 function ChangePassword() {
@@ -76,23 +75,15 @@ function ChangePassword() {
             placeholder="New Password"
             className={password}
           />
-          <div className={buttons} style={{ margin: 0 }}>
-            <button
-              onClick={changePassword}
-              disabled={loading}
-              style={{
-                opacity: loading
-                  ? 0.8
-                  : currentPassword && newPassword
-                  ? 1
-                  : 0.8,
-              }}
-            >
-              {loading && <ButtonSpinner />}Save
-            </button>
-            {logout && <Logout />}
-            <button onClick={closeChangePassword}>Cancel</button>
-          </div>
+          <Buttons
+            text="Save"
+            submit={changePassword}
+            loading={loading}
+            cancel={closeChangePassword}
+            opacity={loading ? 0.8 : currentPassword && newPassword ? 1 : 0.8}
+            styles={{ margin: 0 }}
+          />
+          {logout && <Logout />}
           {newPasswordError && <Error error={newPasswordError} />}
         </>
       ) : (

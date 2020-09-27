@@ -24,7 +24,7 @@ const db = client.db(dbName)
 const col = db.collection('users')
 
 const SESS_NAME = 'sid'
-const FIVE_MINUTES = 1000 * 60 * 5
+const TEN_YEARS = 1000 * 60 * 60 * 24 * 365 * 10
 
 app.use(express.json())
 app.use(
@@ -33,7 +33,7 @@ app.use(
     secret: 'secret',
     store: new MongoStore({ url: url + dbName }),
     cookie: {
-      // maxAge: FIVE_MINUTES,
+      maxAge: TEN_YEARS,
       sameSite: true,
     },
     resave: false,

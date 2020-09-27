@@ -82,9 +82,6 @@ function Login() {
           <span>Log In</span>
         </button>
         <div>
-          <Link to="/login" className={style.link}>
-            Forgot password?
-          </Link>
           <Link to="/signup" className={style.link}>
             Sign up for Fakebook
           </Link>

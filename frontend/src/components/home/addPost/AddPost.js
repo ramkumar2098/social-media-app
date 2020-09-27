@@ -1,8 +1,7 @@
 import React from 'react'
 import { POST_MAX_LENGTH } from 'constants/constants'
-import ButtonSpinner from 'components/buttonSpinner/ButtonSpinner'
+import Buttons from 'components/buttons/Buttons'
 import style from './AddPost.module.css'
-import { buttons } from 'components/Buttons.module.css'
 
 function AddPost({ post, changePost, addPost, clearPost, loading }) {
   return (
@@ -14,21 +13,19 @@ function AddPost({ post, changePost, addPost, clearPost, loading }) {
         className={style.addPost}
         placeholder="Add a public post"
       ></textarea>
-      <div className={buttons}>
-        <button
-          onClick={addPost}
-          disabled={loading}
-          style={{
-            opacity:
-              loading || post.length > POST_MAX_LENGTH ? 0.8 : post ? 1 : 0.8,
-          }}
-        >
-          {loading && <ButtonSpinner />}Post
-        </button>
-        <button onClick={clearPost}>Cancel</button>
-      </div>
+      <Buttons
+        text="Post"
+        submit={addPost}
+        loading={loading}
+        cancel={clearPost}
+        opacity={
+          loading || post.length > POST_MAX_LENGTH ? 0.8 : post ? 1 : 0.8
+        }
+      />
       {post.length >= POST_MAX_LENGTH && (
-        <div style={{ color: 'red' }}>Post reached maximum limit</div>
+        <div style={{ color: 'red', position: 'absolute' }}>
+          Post reached maximum limit
+        </div>
       )}
     </>
   )

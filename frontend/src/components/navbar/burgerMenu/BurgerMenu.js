@@ -1,21 +1,10 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import { useAttachEvents } from 'hooks/useAttachEvents'
 import Overlay from './overlay/Overlay'
 import NavItems from '../navItems/NavItems'
 
 function BurgerMenu({ closeBurgerMenu }) {
-  useEffect(() => {
-    const handleEvent = e =>
-      (e.keyCode === 27 || !e.keyCode) && closeBurgerMenu()
-
-    ;['click', 'keyup'].forEach(event =>
-      window.addEventListener(event, handleEvent)
-    )
-
-    return () =>
-      ['click', 'keyup'].forEach(event =>
-        window.removeEventListener(event, handleEvent)
-      )
-  }, [])
+  useAttachEvents(closeBurgerMenu)
 
   return (
     <>

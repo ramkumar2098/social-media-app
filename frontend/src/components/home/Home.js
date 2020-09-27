@@ -87,8 +87,8 @@ function Home({ setDisplayBurger }) {
         post={post}
         changePost={e => setPost(e.target.value)}
         addPost={addPost}
-        clearPost={() => setPost('')}
         loading={loading}
+        clearPost={() => setPost('')}
       />
       <PostsType {...{ postsType, changePostsType }} />
       {posts.length > 0 ? (

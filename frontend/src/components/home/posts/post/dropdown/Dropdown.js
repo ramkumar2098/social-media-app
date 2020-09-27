@@ -1,21 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import { useAttachEvents } from 'hooks/useAttachEvents'
 import { ReactComponent as Edit } from 'SVGs/Edit.svg'
 import { ReactComponent as Delete } from 'SVGs/Delete.svg'
 import style from './Dropdown.module.css'
 
 function Dropdown({ closeDropdown, openEditPost, openPopup }) {
-  useEffect(() => {
-    const handleEvent = e => (e.keyCode === 27 || !e.keyCode) && closeDropdown()
-
-    ;['click', 'keyup'].forEach(event =>
-      window.addEventListener(event, handleEvent)
-    )
-
-    return () =>
-      ['click', 'keyup'].forEach(event =>
-        window.removeEventListener(event, handleEvent)
-      )
-  }, [])
+  useAttachEvents(closeDropdown)
 
   return (
     <div className={style.dropdown}>

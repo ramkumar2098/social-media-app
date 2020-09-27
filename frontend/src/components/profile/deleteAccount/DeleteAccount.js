@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
+import Buttons from 'components/buttons/Buttons'
 import Popup from 'components/popup/Popup'
 import Logout from 'components/logout/Logout'
 import Error from '../error/Error'
-import { buttons } from 'components/Buttons.module.css'
 import { button, password as _password } from '../Profile.module.css'
 
 function DeleteAccount() {
@@ -56,24 +56,22 @@ function DeleteAccount() {
         className={_password}
         autoFocus
       />
-      <div className={buttons} style={{ marginTop: 0 }}>
-        <button
-          onClick={openPopup}
-          style={{ opacity: loading ? 0.8 : password ? 1 : 0.8 }}
-        >
-          Delete
-        </button>
-        {displayPopup && (
-          <Popup
-            message="Delete your account permanently?"
-            remove={deleteAccount}
-            loading={loading}
-            closePopup={() => setDisplayPopup(false)}
-          />
-        )}
-        {logout && <Logout />}
-        <button onClick={closeDeleteAccount}>Cancel</button>
-      </div>
+      <Buttons
+        text="Delete"
+        submit={openPopup}
+        cancel={closeDeleteAccount}
+        opacity={loading ? 0.8 : password ? 1 : 0.8}
+        styles={{ marginTop: 0 }}
+      />
+      {displayPopup && (
+        <Popup
+          message="Delete your account permanently?"
+          remove={deleteAccount}
+          loading={loading}
+          closePopup={() => setDisplayPopup(false)}
+        />
+      )}
+      {logout && <Logout />}
       {deleteAccountError && <Error error={deleteAccountError} />}
     </>
   ) : (
