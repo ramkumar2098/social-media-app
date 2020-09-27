@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Popup from 'components/popup/Popup'
 import Logout from 'components/logout/Logout'
 import Error from '../error/Error'
-import { buttons } from '../../home/Buttons.module.css'
+import { buttons } from 'components/Buttons.module.css'
 import { button, password as _password } from '../Profile.module.css'
 
 function DeleteAccount() {

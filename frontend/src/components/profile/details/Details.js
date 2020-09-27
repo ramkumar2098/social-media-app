@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import EditName from './editName/EditName'
 import Name from './name/Name'
-import { month, date, year } from 'utils'
+import { month, date, year } from 'utils/utils'
 import style from './Details.module.css'
 
 function Details({ profile, setProfile }) {

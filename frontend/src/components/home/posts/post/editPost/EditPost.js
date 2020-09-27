@@ -1,8 +1,8 @@
 import React from 'react'
-import { POST_MAX_LENGTH } from 'appConstants'
-import Spinner from 'components/spinner/Spinner'
+import { POST_MAX_LENGTH } from 'constants/constants'
+import ButtonSpinner from 'components/buttonSpinner/ButtonSpinner'
 import style from './EditPost.module.css'
-import { buttons } from '../../../Buttons.module.css'
+import { buttons } from 'components/Buttons.module.css'
 
 function EditPost({
   editedPost,
@@ -38,7 +38,7 @@ function EditPost({
                 : 0.8,
           }}
         >
-          {updatePostLoading && <Spinner />}Save
+          {updatePostLoading && <ButtonSpinner />}Save
         </button>
         <button onClick={closeEditPost}>Cancel</button>
       </div>

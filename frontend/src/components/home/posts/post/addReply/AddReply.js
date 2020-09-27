@@ -1,9 +1,9 @@
 import React from 'react'
 import profilePic from 'images/profile.png'
-import { POST_MAX_LENGTH } from 'appConstants'
-import Spinner from 'components/spinner/Spinner'
+import { POST_MAX_LENGTH } from 'constants/constants'
+import ButtonSpinner from 'components/buttonSpinner/ButtonSpinner'
 import style from './AddReply.module.css'
-import { buttons } from '../../../Buttons.module.css'
+import { buttons } from 'components/Buttons.module.css'
 
 function AddReply({ reply, changeReply, addReply, closeAddReply, loading }) {
   return (
@@ -29,7 +29,7 @@ function AddReply({ reply, changeReply, addReply, closeAddReply, loading }) {
               loading || reply.length > POST_MAX_LENGTH ? 0.8 : reply ? 1 : 0.8,
           }}
         >
-          {loading && <Spinner />}Reply
+          {loading && <ButtonSpinner />}Reply
         </button>
         <button onClick={closeAddReply}>Cancel</button>
       </div>

@@ -1,8 +1,8 @@
 import React from 'react'
-import { POST_MAX_LENGTH } from 'appConstants'
-import Spinner from 'components/spinner/Spinner'
+import { POST_MAX_LENGTH } from 'constants/constants'
+import ButtonSpinner from 'components/buttonSpinner/ButtonSpinner'
 import style from './AddPost.module.css'
-import { buttons } from '../Buttons.module.css'
+import { buttons } from 'components/Buttons.module.css'
 
 function AddPost({ post, changePost, addPost, clearPost, loading }) {
   return (
@@ -23,7 +23,7 @@ function AddPost({ post, changePost, addPost, clearPost, loading }) {
               loading || post.length > POST_MAX_LENGTH ? 0.8 : post ? 1 : 0.8,
           }}
         >
-          {loading && <Spinner />}Post
+          {loading && <ButtonSpinner />}Post
         </button>
         <button onClick={clearPost}>Cancel</button>
       </div>

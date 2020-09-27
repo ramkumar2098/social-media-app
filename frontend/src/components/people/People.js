@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import Person from './person/Person'
-import Spinner from 'components/privateRoute/spinner/Spinner'
+import Spinner from 'components/spinner/Spinner'
 import style from './People.module.css'
 
 function People({ setDisplayBurger }) {

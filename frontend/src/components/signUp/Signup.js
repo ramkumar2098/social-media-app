@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react'
 import useForm from 'hooks/useForm'
-import Error from '../error/Error'
-import PasswordIcon from '../passwordIcon/PasswordIcon'
-import Spinner from '../spinner/Spinner'
+import Error from 'components/error/Error'
+import PasswordIcon from 'components/passwordIcon/PasswordIcon'
+import ButtonSpinner from 'components/buttonSpinner/ButtonSpinner'
 import { Link, useHistory } from 'react-router-dom'
-import style from '../Form.module.css'
+import style from 'components/Form.module.css'
 import style1 from './Signup.module.css'
 
 function Signup() {
@@ -141,7 +141,7 @@ function Signup() {
           {confirmPasswordError && <Error error={confirmPasswordError} />}
         </div>
         <button ref={signUpBtnRef} className={style.btn}>
-          {loading && <Spinner />}
+          {loading && <ButtonSpinner />}
           <span>Sign Up</span>
         </button>
         <Link to="/login" className={style.link}>

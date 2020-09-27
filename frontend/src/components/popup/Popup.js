@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react'
-import Spinner from 'components/spinner/Spinner'
-import { buttons } from 'components/home/Buttons.module.css'
+import ButtonSpinner from 'components/buttonSpinner/ButtonSpinner'
 import style from './Popup.module.css'
+import { buttons } from 'components/Buttons.module.css'
 
 function Popup({ message, remove, loading, closePopup }) {
   const popupRef = useRef()
@@ -32,7 +32,7 @@ function Popup({ message, remove, loading, closePopup }) {
             style={{ opacity: loading ? 0.8 : 1 }}
             autoFocus
           >
-            {loading && <Spinner />}Delete
+            {loading && <ButtonSpinner />}Delete
           </button>
           <button onClick={closePopup}>Cancel</button>
         </div>

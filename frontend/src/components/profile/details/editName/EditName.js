@@ -1,7 +1,7 @@
 import React from 'react'
-import Spinner from 'components/spinner/Spinner'
+import ButtonSpinner from 'components/buttonSpinner/ButtonSpinner'
 import Error from '../../error/Error'
-import { buttons } from '../../../home/Buttons.module.css'
+import { buttons } from 'components/Buttons.module.css'
 
 function EditName({
   editedName,
@@ -25,7 +25,7 @@ function EditName({
           disabled={loading}
           style={{ opacity: loading ? 0.8 : editedName ? 1 : 0.8 }}
         >
-          {loading && <Spinner />}Save
+          {loading && <ButtonSpinner />}Save
         </button>
         <button onClick={closeEditName}>Cancel</button>
       </div>

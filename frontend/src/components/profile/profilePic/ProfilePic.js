@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import profilePic from 'images/profile2.jpg'
 import { useParams } from 'react-router-dom'
 import EnlargedPic from './enlargedPic/EnlargedPic'
-import Spinner from 'components/spinner/Spinner'
+import ButtonSpinner from 'components/buttonSpinner/ButtonSpinner'
 import { ReactComponent as Delete } from 'SVGs/Delete.svg'
 import Popup from 'components/popup/Popup'
 import UploadAvatar from './uploadAvatar/UploadAvatar'
@@ -96,7 +96,7 @@ function ProfilePic({ avatar: _avatar }) {
       )}
       {loading && (
         <div className={style.spinner}>
-          <Spinner />
+          <ButtonSpinner />
         </div>
       )}
       {!userID && avatar !== profilePic && (

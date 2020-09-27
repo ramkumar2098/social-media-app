@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { POST_MAX_LENGTH } from 'appConstants'
+import { POST_MAX_LENGTH } from 'constants/constants'
 import { Link } from 'react-router-dom'
 import profilePic from 'images/profile.png'
 import EditPost from './editPost/EditPost'

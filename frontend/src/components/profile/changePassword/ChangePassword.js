@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import Error from '../error/Error'
-import Spinner from 'components/spinner/Spinner'
+import ButtonSpinner from 'components/buttonSpinner/ButtonSpinner'
 import Logout from 'components/logout/Logout'
-import { buttons } from '../../home/Buttons.module.css'
+import { buttons } from 'components/Buttons.module.css'
 import { button, password } from '../Profile.module.css'
 
 function ChangePassword() {
@@ -88,7 +88,7 @@ function ChangePassword() {
                   : 0.8,
               }}
             >
-              {loading && <Spinner />}Save
+              {loading && <ButtonSpinner />}Save
             </button>
             {logout && <Logout />}
             <button onClick={closeChangePassword}>Cancel</button>

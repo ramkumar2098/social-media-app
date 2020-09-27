@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import Spinner from './spinner/Spinner'
+import Spinner from 'components/spinner/Spinner'
 
 function CheckAuth({ children, ...rest }) {
   const [loggedIn, setLoggedIn] = useState('verifying')

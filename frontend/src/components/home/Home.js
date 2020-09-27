@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { POST_MAX_LENGTH } from 'appConstants'
+import { POST_MAX_LENGTH } from 'constants/constants'
 import AddPost from './addPost/AddPost'
+import PostsType from './postsType/PostsType'
 import Posts from './posts/Posts'
-import Spinner from 'components/privateRoute/spinner/Spinner'
+import Spinner from 'components/spinner/Spinner'
 import style from './Home.module.css'
 
 function Home({ setDisplayBurger }) {
@@ -61,6 +62,11 @@ function Home({ setDisplayBurger }) {
     localStorage.getItem('postsType') || 'All posts'
   )
 
+  const changePostsType = e => {
+    setPostsType(e.target.value)
+    localStorage.setItem('postsType', e.target.value)
+  }
+
   const displayPosts = () => {
     const posts = postsRef.current
 
@@ -84,17 +90,7 @@ function Home({ setDisplayBurger }) {
         clearPost={() => setPost('')}
         loading={loading}
       />
-      <select
-        value={postsType}
-        onChange={e => {
-          setPostsType(e.target.value)
-          localStorage.setItem('postsType', e.target.value)
-        }}
-        className={style.postsType}
-      >
-        <option>All posts</option>
-        <option>Your posts</option>
-      </select>
+      <PostsType {...{ postsType, changePostsType }} />
       {posts.length > 0 ? (
         <Posts {...{ posts, setPosts, postsRef, displayPosts }} />
       ) : (

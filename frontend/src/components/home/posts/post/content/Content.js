@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { POST_MAX_VISIBLE_LENGTH } from 'appConstants'
+import { POST_MAX_VISIBLE_LENGTH } from 'constants/constants'
 import { readMoreBtn } from '../Post.module.css'
 
 function Content({ post }) {

@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import NavItems from './navItems/NavItems'
+import Burger from './burger/Burger'
 import BurgerMenu from './burgerMenu/BurgerMenu'
 import style from './Navbar.module.css'
-import Burger from './burger/Burger'
 
 function Navbar({ displayBurger }) {
   const navbarRef = useRef()
