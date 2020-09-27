@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Overlay from './overlay/Overlay'
 import NavItems from '../navItems/NavItems'
 
@@ -17,17 +17,10 @@ function BurgerMenu({ closeBurgerMenu }) {
       )
   }, [])
 
-  const [redirect, setRedirect] = useState(false)
-
-  const logOut = () => {
-    fetch('/logout', { method: 'POST' }).catch(console.log)
-    setRedirect(true)
-  }
-
   return (
     <>
       <Overlay />
-      <NavItems logOut={logOut} redirect={redirect} className="burgerMenu" />
+      <NavItems className="burgerMenu" />
     </>
   )
 }

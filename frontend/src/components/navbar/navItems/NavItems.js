@@ -1,14 +1,17 @@
-import React from 'react'
-import { Link, Redirect } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
+import Logout from 'components/logout/Logout'
 import style from './NavItems.module.css'
 
-function NavItems({ logOut, redirect, className }) {
+function NavItems({ className }) {
+  const [logout, setLogout] = useState(false)
+
   return (
     <div className={style[className]}>
       <Link to="/people">People</Link>
       <Link to="/profile">Profile</Link>
-      <button onClick={logOut}>Log out</button>
-      {redirect && <Redirect to="/login" />}
+      <button onClick={() => setLogout(true)}>Log out</button>
+      {logout && <Logout />}
     </div>
   )
 }

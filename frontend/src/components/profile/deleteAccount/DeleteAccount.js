@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import Popup from 'components/home/posts/post/popup/Popup'
-import { Redirect } from 'react-router-dom'
+import Popup from 'components/popup/Popup'
+import Logout from 'components/logout/Logout'
 import Error from '../error/Error'
 import { buttons } from '../../home/Buttons.module.css'
 import { button, password as _password } from '../Profile.module.css'
@@ -38,18 +38,13 @@ function DeleteAccount() {
           setDisplayPopup(false)
           return setDeleteAccountError(data.deleteAccountError)
         }
-        logOut()
+        setLogout(true)
       })
       .catch(console.log())
   }
 
   const [loading, setLoading] = useState(false)
-  const [redirect, setRedirect] = useState(false)
-
-  const logOut = () => {
-    fetch('/logout', { method: 'POST' }).catch(console.log)
-    setRedirect(true)
-  }
+  const [logout, setLogout] = useState(false)
 
   return displayDeleteAccount ? (
     <>
@@ -71,12 +66,12 @@ function DeleteAccount() {
         {displayPopup && (
           <Popup
             message="Delete your account permanently?"
-            deletePost={deleteAccount}
-            deletePostLoading={loading}
+            remove={deleteAccount}
+            loading={loading}
             closePopup={() => setDisplayPopup(false)}
           />
         )}
-        {redirect && <Redirect to="/login" />}
+        {logout && <Logout />}
         <button onClick={closeDeleteAccount}>Cancel</button>
       </div>
       {deleteAccountError && <Error error={deleteAccountError} />}

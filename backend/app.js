@@ -46,13 +46,7 @@ app.post('/auth', (req, res) => {
 })
 
 app.post('/signup', async (req, res) => {
-  const {
-    firstName,
-    lastName,
-    email,
-    password,
-    confirmPassword,
-  } = req.body.values
+  const { firstName, lastName, email, password, confirmPassword } = req.body
 
   const [_firstName, _lastName, _email, _password, _confirmPassword] = [
     capitalize(firstName.trim()),
@@ -62,30 +56,20 @@ app.post('/signup', async (req, res) => {
     confirmPassword.trim(),
   ]
 
-  const firstNameError = validateFirstName(_firstName)
-  const lastNameError = validateLastName(_lastName)
-  const emailError = await validateEmail(col, _email)
-  const passwordError = validatePassword(_password)
-  const confirmPasswordError = validateConfirmPassword(
+  const errors = {}
+
+  errors.firstNameError = validateFirstName(_firstName)
+  errors.lastNameError = validateLastName(_lastName)
+  errors.emailError = await validateEmail(col, _email)
+  errors.passwordError = validatePassword(_password)
+  errors.confirmPasswordError = validateConfirmPassword(
     _password,
     _confirmPassword
   )
 
-  const errors =
-    firstNameError ||
-    lastNameError ||
-    emailError ||
-    passwordError ||
-    confirmPasswordError
+  const hasErrors = Object.values(errors).filter(e => e).length
 
-  if (errors)
-    return res.json({
-      firstNameError,
-      lastNameError,
-      emailError,
-      passwordError,
-      confirmPasswordError,
-    })
+  if (hasErrors) return res.send(errors)
 
   try {
     const hashedPassword = await bcrypt.hash(_password, 10)
@@ -98,7 +82,7 @@ app.post('/signup', async (req, res) => {
       avatar: '',
     }
 
-    await col.insertOne(document)
+    col.insertOne(document)
 
     res.json({ path: '/login' })
   } catch (err) {
@@ -245,9 +229,7 @@ app.post('/addReply', async (req, res) => {
     res.json(reply)
     col.updateOne(
       { _id: mongodb.ObjectId(req.body._id) },
-      {
-        $push: { replies: reply },
-      }
+      { $push: { replies: reply } }
     )
   } catch (err) {
     console.log(err)

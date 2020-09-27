@@ -5,7 +5,7 @@ import profilePic from 'images/profile.png'
 import EditPost from './editPost/EditPost'
 import PostHead from './postHead/PostHead'
 import Dropdown from './dropdown/Dropdown'
-import Popup from './popup/Popup'
+import Popup from 'components/popup/Popup'
 import Content from './content/Content'
 import Actions from './actions/Actions'
 import AddReply from './addReply/AddReply'
@@ -192,8 +192,8 @@ function Post({ post, posts, setPosts, postsRef, displayPosts }) {
                     ? 'Delete your post and all of its replies permanently?'
                     : 'Delete your post permanently?'
                 }
-                deletePost={deletePost}
-                deletePostLoading={deletePostLoading}
+                remove={deletePost}
+                loading={deletePostLoading}
                 closePopup={() => setDisplayPopup(false)}
               />
             )}

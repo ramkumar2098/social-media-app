@@ -21,16 +21,6 @@ function Navbar({ displayBurger }) {
     prevScrollPos = currentScrollPos
   }
 
-  const [redirect, setRedirect] = useState(false)
-
-  const logOut = () => {
-    setRedirect(true)
-
-    fetch('/logout', { method: 'POST' })
-      .then(() => setRedirect(false))
-      .catch(console.log)
-  }
-
   const mediaQ = window.matchMedia('(min-width: 700px)')
   const [largeScreen, setLargeScreen] = useState(mediaQ.matches)
   mediaQ.onchange = () => setLargeScreen(mediaQ.matches)
@@ -45,7 +35,7 @@ function Navbar({ displayBurger }) {
         </Link>
         {displayBurger &&
           (largeScreen ? (
-            <NavItems logOut={logOut} redirect={redirect} className="navbar" />
+            <NavItems className="navbar" />
           ) : (
             <Burger openBurgerMenu={() => setDisplayBurgerMenu(true)} />
           ))}

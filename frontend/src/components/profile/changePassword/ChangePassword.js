@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import Spinner from 'components/spinner/Spinner'
-import { Redirect } from 'react-router-dom'
 import Error from '../error/Error'
+import Spinner from 'components/spinner/Spinner'
+import Logout from 'components/logout/Logout'
 import { buttons } from '../../home/Buttons.module.css'
 import { button, password } from '../Profile.module.css'
 
@@ -47,18 +47,13 @@ function ChangePassword() {
           setLoading(false)
           return setNewPasswordError(data.newPasswordError)
         }
-        logOut()
+        setLogout(true)
       })
       .catch(console.log())
   }
 
   const [loading, setLoading] = useState(false)
-  const [redirect, setRedirect] = useState(false)
-
-  const logOut = () => {
-    fetch('/logout', { method: 'POST' }).catch(console.log)
-    setRedirect(true)
-  }
+  const [logout, setLogout] = useState(false)
 
   return (
     <div style={{ marginBottom: '12px' }}>
@@ -95,7 +90,7 @@ function ChangePassword() {
             >
               {loading && <Spinner />}Save
             </button>
-            {redirect && <Redirect to="/login" />}
+            {logout && <Logout />}
             <button onClick={closeChangePassword}>Cancel</button>
           </div>
           {newPasswordError && <Error error={newPasswordError} />}

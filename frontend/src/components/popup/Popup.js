@@ -1,9 +1,9 @@
 import React, { useRef, useEffect } from 'react'
 import Spinner from 'components/spinner/Spinner'
-import { buttons } from '../../../Buttons.module.css'
+import { buttons } from 'components/home/Buttons.module.css'
 import style from './Popup.module.css'
 
-function Popup({ message, deletePost, deletePostLoading, closePopup }) {
+function Popup({ message, remove, loading, closePopup }) {
   const popupRef = useRef()
 
   useEffect(() => {
@@ -27,12 +27,12 @@ function Popup({ message, deletePost, deletePostLoading, closePopup }) {
         <div>{message}</div>
         <div className={buttons}>
           <button
-            onClick={deletePost}
-            disabled={deletePostLoading}
-            style={{ opacity: deletePostLoading ? 0.8 : 1 }}
+            onClick={remove}
+            disabled={loading}
+            style={{ opacity: loading ? 0.8 : 1 }}
             autoFocus
           >
-            {deletePostLoading && <Spinner />}Delete
+            {loading && <Spinner />}Delete
           </button>
           <button onClick={closePopup}>Cancel</button>
         </div>

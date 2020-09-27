@@ -5,7 +5,7 @@ import profilePic from 'images/profile.png'
 import EditPost from '../editPost/EditPost'
 import PostHead from '../postHead/PostHead'
 import Dropdown from '../dropdown/Dropdown'
-import Popup from '../popup/Popup'
+import Popup from 'components/popup/Popup'
 import Content from '../content/Content'
 import Actions from '../actions/Actions'
 import AddReply from '../addReply/AddReply'
@@ -185,8 +185,8 @@ function Reply({ reply, post, posts, setPosts }) {
             {displayPopup && (
               <Popup
                 message="Delete your reply permanently?"
-                deletePost={deleteReply}
-                deletePostLoading={deleteReplyLoading}
+                remove={deleteReply}
+                loading={deleteReplyLoading}
                 closePopup={() => setDisplayPopup(false)}
               />
             )}

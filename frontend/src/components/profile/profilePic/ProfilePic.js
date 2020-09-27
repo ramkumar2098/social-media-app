@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import EnlargedPic from './enlargedPic/EnlargedPic'
 import Spinner from 'components/spinner/Spinner'
 import { ReactComponent as Delete } from 'SVGs/Delete.svg'
-import Popup from 'components/home/posts/post/popup/Popup'
+import Popup from 'components/popup/Popup'
 import UploadAvatar from './uploadAvatar/UploadAvatar'
 import style from './ProfilePic.module.css'
 
@@ -112,8 +112,8 @@ function ProfilePic({ avatar: _avatar }) {
       {displayPopup && (
         <Popup
           message="Delete your profile picture?"
-          deletePost={removeAvatar}
-          deletePostLoading={loading}
+          remove={removeAvatar}
+          loading={loading}
           closePopup={() => setDisplayPopup(false)}
         />
       )}
