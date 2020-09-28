@@ -6,9 +6,12 @@ function PrivateRoute({ children, ...rest }) {
   const [loggedIn, setLoggedIn] = useState(null)
 
   useEffect(() => {
-    fetch('/auth', { method: 'POST' })
+    fetch('/auth')
       .then(response => response.json())
-      .then(data => setLoggedIn(data.loggedIn))
+      .then(data => {
+        setLoggedIn(data.loggedIn)
+        localStorage.setItem('loggedIn', data.loggedIn)
+      })
       .catch(console.log)
   }, [])
 

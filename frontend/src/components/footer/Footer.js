@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 import style from './Footer.module.css'
 
 function Footer() {
@@ -6,14 +6,16 @@ function Footer() {
 
   let prevScrollPos = window.pageYOffset
 
-  window.addEventListener('scroll', () => {
-    const currentScrollPos = window.pageYOffset
+  useEffect(() => {
+    window.addEventListener('scroll', () => {
+      const currentScrollPos = window.pageYOffset
 
-    footerRef.current.style.bottom =
-      prevScrollPos > currentScrollPos ? 0 : '-26px'
+      footerRef.current.style.bottom =
+        prevScrollPos > currentScrollPos ? 0 : '-26px'
 
-    prevScrollPos = currentScrollPos
-  })
+      prevScrollPos = currentScrollPos
+    })
+  }, [])
 
   return (
     <div ref={footerRef} className={style.footer}>

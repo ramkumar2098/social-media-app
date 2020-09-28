@@ -1,11 +1,22 @@
-import React, { useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useEffect, useRef, useState } from 'react'
+import { useHistory, Link } from 'react-router-dom'
 import NavItems from './navItems/NavItems'
 import Burger from './burger/Burger'
 import BurgerMenu from './burgerMenu/BurgerMenu'
 import style from './Navbar.module.css'
 
 function Navbar({ displayBurger }) {
+  const { push } = useHistory()
+
+  useEffect(() => {
+    window.addEventListener('storage', e => {
+      if (e.key !== 'loggedIn') return
+      const loggedIn = JSON.parse(e.newValue)
+
+      push(loggedIn ? '/home' : '/login')
+    })
+  }, [])
+
   const navbarRef = useRef()
 
   let prevScrollPos = window.pageYOffset

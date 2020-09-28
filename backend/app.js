@@ -43,7 +43,7 @@ app.use(
   })
 )
 
-app.post('/auth', (req, res) => {
+app.get('/auth', (req, res) => {
   res.json({ loggedIn: !!req.session.userID })
 })
 
@@ -152,7 +152,7 @@ app.get('/people', async (req, res) => {
   }
 })
 
-app.post('/logout', (req, res) => {
+app.delete('/logout', (req, res) => {
   req.session.destroy(err => {
     if (err) {
       return console.log(err)

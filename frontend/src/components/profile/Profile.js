@@ -21,15 +21,15 @@ function Profile({ setDisplayBurger }) {
   const url = '/profile/' + (userID || '')
 
   useEffect(() => {
+    setProfile({})
+    setError('')
+
     fetch(url)
       .then(response => {
         if (response.ok) return response.json()
         throw response.statusText
       })
-      .then(profile => {
-        setError('')
-        setProfile(profile)
-      })
+      .then(setProfile)
       .catch(setError)
   }, [userID])
 

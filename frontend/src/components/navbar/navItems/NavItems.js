@@ -1,17 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useLogout } from 'hooks/useLogout'
 import { Link } from 'react-router-dom'
-import Logout from 'components/logout/Logout'
 import style from './NavItems.module.css'
 
 function NavItems({ className }) {
-  const [logout, setLogout] = useState(false)
+  const logout = useLogout()
 
   return (
     <div className={style[className]}>
       <Link to="/people">People</Link>
       <Link to="/profile">Profile</Link>
-      <button onClick={() => setLogout(true)}>Log out</button>
-      {logout && <Logout />}
+      <button onClick={() => logout()}>Log out</button>
     </div>
   )
 }

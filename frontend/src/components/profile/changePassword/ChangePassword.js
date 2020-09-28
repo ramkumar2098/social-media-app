@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
+import { useLogout } from 'hooks/useLogout'
 import Error from '../error/Error'
 import Buttons from 'components/buttons/Buttons'
-import Logout from 'components/logout/Logout'
 import { button, password } from '../Profile.module.css'
 
 function ChangePassword() {
@@ -20,6 +20,9 @@ function ChangePassword() {
     setNewPasswordError('')
     setDisplayChangePassword(false)
   }
+
+  const [loading, setLoading] = useState(false)
+  const logout = useLogout()
 
   const changePassword = () => {
     if (!currentPassword || !newPassword) return
@@ -46,13 +49,10 @@ function ChangePassword() {
           setLoading(false)
           return setNewPasswordError(data.newPasswordError)
         }
-        setLogout(true)
+        logout()
       })
-      .catch(console.log())
+      .catch(console.log)
   }
-
-  const [loading, setLoading] = useState(false)
-  const [logout, setLogout] = useState(false)
 
   return (
     <div style={{ marginBottom: '12px' }}>
@@ -83,7 +83,6 @@ function ChangePassword() {
             opacity={loading ? 0.8 : currentPassword && newPassword ? 1 : 0.8}
             styles={{ margin: 0 }}
           />
-          {logout && <Logout />}
           {newPasswordError && <Error error={newPasswordError} />}
         </>
       ) : (

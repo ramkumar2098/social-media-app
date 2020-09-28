@@ -38,7 +38,7 @@ function Reply({ reply, post, posts, setPosts }) {
     if (!replyToReply || replyToReply.length > POST_MAX_LENGTH) return
     setLoading(true)
 
-    fetch('/addReply', {
+    fetch('/posts/addReply', {
       method: 'POST',
       headers: { 'Content-type': 'application/json' },
       body: JSON.stringify({ _id: post._id, reply: replyToReply }),

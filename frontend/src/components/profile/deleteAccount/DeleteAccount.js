@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
+import { useLogout } from 'hooks/useLogout'
 import Buttons from 'components/buttons/Buttons'
 import Popup from 'components/popup/Popup'
-import Logout from 'components/logout/Logout'
 import Error from '../error/Error'
 import { button, password as _password } from '../Profile.module.css'
 
@@ -23,6 +23,9 @@ function DeleteAccount() {
     setDisplayPopup(true)
   }
 
+  const [loading, setLoading] = useState(false)
+  const logout = useLogout()
+
   const deleteAccount = () => {
     setLoading(true)
 
@@ -38,13 +41,10 @@ function DeleteAccount() {
           setDisplayPopup(false)
           return setDeleteAccountError(data.deleteAccountError)
         }
-        setLogout(true)
+        logout()
       })
-      .catch(console.log())
+      .catch(console.log)
   }
-
-  const [loading, setLoading] = useState(false)
-  const [logout, setLogout] = useState(false)
 
   return displayDeleteAccount ? (
     <>
@@ -71,7 +71,6 @@ function DeleteAccount() {
           closePopup={() => setDisplayPopup(false)}
         />
       )}
-      {logout && <Logout />}
       {deleteAccountError && <Error error={deleteAccountError} />}
     </>
   ) : (
